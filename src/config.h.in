@@ -1,0 +1,7 @@
+#if !defined(__CONFIG_H)
+#   define(__CONFIG_H)
+
+#   define GPGUI_VERSION "${PROJECT_VERSION}"
+
+#endif /* __CONFIG_H */
+
