@@ -1,14 +1,12 @@
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-protected:
+  protected:
     void closeEvent(QCloseEvent *event) override;
 
-private slots:
+  private slots:
     void about();
 
-private:
+  private:
     void createStatusBar();
 }
-

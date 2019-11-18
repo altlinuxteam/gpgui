@@ -1,14 +1,12 @@
 #include <QApplication>
-#include <QCommandLineParser>
 #include <QCommandLineOptions>
+#include <QCommandLineParser>
 
 #include "config.h"
 
 #include "MainWindow.h"
 
-int
-main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
     Q_INIT_RESOURCE(application);
 
     QApplication app(argc, argv);
@@ -16,4 +14,3 @@ main(int argc, char** argv)
     QCoreApplication::setApplicationName("GPGUI");
     QCoreApplication::setApplicationVersion(GPGUI_VERSION);
 }
-
