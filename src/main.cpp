@@ -1,5 +1,5 @@
 #include <QApplication>
-#include <QCommandLineOptions>
+#include <QCommandLineOption>
 #include <QCommandLineParser>
 
 #include "config.h"
@@ -13,4 +13,13 @@ int main(int argc, char **argv) {
     QCoreApplication::setOrganizationName("BaseALT");
     QCoreApplication::setApplicationName("GPGUI");
     QCoreApplication::setApplicationVersion(GPGUI_VERSION);
+
+    QCommandLineParser cli_parser;
+    cli_parser.setApplicationDescription(QCoreApplication::applicationName());
+    cli_parser.addHelpOption();
+    cli_parser.addVersionOption();
+    cli_parser.process(app);
+
+    return app.exec();
 }
+

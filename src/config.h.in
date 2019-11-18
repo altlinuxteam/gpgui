@@ -1,7 +1,7 @@
-#if !defined(__CONFIG_H)
-#   define(__CONFIG_H)
+#if !defined(__GPGUI_CONFIG_H)
+#   define __GPGUI_CONFIG_H 1
 
 #   define GPGUI_VERSION "${PROJECT_VERSION}"
 
-#endif /* __CONFIG_H */
+#endif /* __GPGUI_CONFIG_H */
 

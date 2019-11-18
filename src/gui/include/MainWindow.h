@@ -1,3 +1,6 @@
+#if !defined(__GPGUI_MAINWINDOW_H)
+#   define GPGUI_MAINWINDOW_H 1
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -9,4 +12,7 @@ class MainWindow : public QMainWindow {
 
   private:
     void createStatusBar();
-}
+};
+
+#endif /* __GPGUI_MAINWINDOW_H */
+
