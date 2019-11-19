@@ -8,10 +8,12 @@
 
 class Runner
 {
-    QCoreApplication *app;
+    QApplication *app;
+    int argc;
+    char **argv;
 
 public:
-    Runner(int argc, char **argv, QString orgname, QString appname, QString appver);
+    Runner(int argc, char **argv, QString dispname, QString appname, QString appver, QString orgname, QString orgdomain);
     void arg_parser();
     int run();
 };

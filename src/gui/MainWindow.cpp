@@ -5,60 +5,62 @@
 #include <QPushButton>
 #include <QCloseEvent>
 
+#include <QTabWidget>
+
 #include "MainWindow.h"
 
 void
-QGUI::MainWindow::createMenuBar() {
+qgui::MainWindow::createMenuBar() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     helpMenu = menuBar()->addMenu(tr("&Help"));
 
-    connect(fileMenu, &QMenu::aboutToShow, this, &QGUI::MainWindow::about);
+    //connect(fileMenu, &QMenu::aboutToShow, this, &qgui::MainWindow::about);
 
-    exitAction = new QAction(tr("&Exit"), this);
+    exitAction = fileMenu->addAction(tr("&Exit"), this, &QWidget::close);
     exitAction->setStatusTip(tr("Exit GPGUI"));
-    connect(exitAction, &QAction::triggered, this, &QGUI::MainWindow::about);
 
-    QAction *aboutAction = helpMenu->addAction(tr("&About"), this, &QGUI::MainWindow::about);
+    QAction *aboutAction = helpMenu->addAction(tr("&About"), this, &qgui::MainWindow::about);
     aboutAction->setStatusTip(tr("About GPGUI"));
 }
 
 void
-QGUI::MainWindow::createStatusBar() {
+qgui::MainWindow::createStatusBar() {
     this->statusBar()->showMessage(tr("Ready"));
 }
 
-QGUI::MainWindow::MainWindow(QWidget *parent)
+qgui::MainWindow::MainWindow(QWidget *parent)
 //: QMainWindow(parent)
 {
-    QFrame *frame = new QFrame;
+    QTabWidget *tw = new QTabWidget;
+    tw->addTab(new QWidget, tr("Registry.pol editor"));
+    tw->addTab(new QWidget, tr("GPO editor"));
+
     QVBoxLayout *layout = new QVBoxLayout;
-    QPushButton *button = new QPushButton("Press");
+    layout->addWidget(tw);
 
-    layout->addWidget(button);
-
+    QFrame *frame = new QFrame;
     frame->setLayout(layout);
-
     setCentralWidget(frame);
 
     this->createMenuBar();
     this->createStatusBar();
 }
 
-QGUI::MainWindow::~MainWindow() {
+qgui::MainWindow::~MainWindow() {
 }
 
 void 
-QGUI::MainWindow::closeEvent(QCloseEvent *event) {
+qgui::MainWindow::closeEvent(QCloseEvent *event) {
     event->accept();
 }
 
 void
-QGUI::MainWindow::about() {
+qgui::MainWindow::about() {
     QMessageBox::about(this, tr("About GPGUI"), tr("GPGUI about"));
 }
 
 void
-QGUI::MainWindow::updateMainMenu() {
+qgui::MainWindow::updateMainMenu() {
     fileMenu->clear();
     fileMenu->addAction(exitAction);
 }

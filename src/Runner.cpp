@@ -1,23 +1,31 @@
 #include "config.h"
 
-#include <memory>
-
 #include <QScopedPointer>
 #include <QApplication>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 
+#include <QStringList>
+
 #include "MainWindow.h"
 
 #include "Runner.h"
 
-Runner::Runner(int argc, char **argv, QString orgname, QString appname, QString appver) {
-    //Q_INIT_RESOURCE(application);
+Runner::Runner(int argc, char **argv, QString dispname, QString appname, QString appver, QString orgname, QString orgdomain) {
+    Q_INIT_RESOURCE(gpgui); // Initialize gpgui.qrc metadata.
 
-    this->app = new QApplication(argc, argv);
-    QCoreApplication::setOrganizationName(orgname);
-    QCoreApplication::setApplicationName(appname);
-    QCoreApplication::setApplicationVersion(appver);
+    /* Please ensure argc and argv lifetime is enough otherwise
+     * the application will segfault on attempt to access
+     * qApp->arguments() because of NULL pointer */
+    this->argc = argc;
+    this->argv = argv;
+
+    this->app = new QApplication(this->argc, this->argv);
+    this->app->setApplicationDisplayName(dispname);
+    this->app->setApplicationName(appname);
+    this->app->setApplicationVersion(appver);
+    this->app->setOrganizationName(orgname);
+    this->app->setOrganizationDomain(orgdomain);
 }
 
 void
@@ -26,14 +34,15 @@ Runner::arg_parser() {
     cli_parser.setApplicationDescription(QCoreApplication::applicationName());
     cli_parser.addHelpOption();
     cli_parser.addVersionOption();
-    //cli_parser.process(this->app);
+    const QStringList arg_list = qApp->arguments();
+    cli_parser.process(arg_list);
 }
 
 int
 Runner::run() {
     this->arg_parser();
 
-    QGUI::MainWindow mainWin;
+    qgui::MainWindow mainWin;
     mainWin.show();
 
     return app->exec();

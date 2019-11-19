@@ -9,7 +9,7 @@ class QAction;
 class QMenu;
 QT_END_NAMESPACE
 
-namespace QGUI {
+namespace qgui {
 
 class MainWindow : public QMainWindow {
     //Q_OBJECT
@@ -29,9 +29,9 @@ private slots:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
-};
+}; /* class MainWindow */
 
-} /* QGUI */
+} /* namespace qgui */
 
 #endif /* __GPGUI_MAINWINDOW_H */
 

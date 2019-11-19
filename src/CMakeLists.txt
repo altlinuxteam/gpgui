@@ -20,12 +20,14 @@ set(GPGUI_GUI_SOURCES
 set(GPGUI_SOURCES
 	main.cpp
 	Runner.cpp
-	#gpgui.qrc
+	gpgui.qrc
 )
 
 # Definitions for configuration file
-set(GPGUI_ORGANIZATION "BaseALT")
 set(GPGUI_APPLICATION_NAME "GPGUI")
+set(GPGUI_APPLICATION_DISPLAY_NAME "GPGUI")
+set(GPGUI_ORGANIZATION "BaseALT")
+set(GPGUI_ORGANIZATION_DOMAIN "basealt.ru")
 
 configure_file("config.h.in" "config.h")
 
