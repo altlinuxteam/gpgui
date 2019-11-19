@@ -1,18 +1,37 @@
 #if !defined(__GPGUI_MAINWINDOW_H)
-#   define GPGUI_MAINWINDOW_H 1
+#   define __GPGUI_MAINWINDOW_H 1
+
+#include <QMainWindow>
+#include <QtWidgets>
+
+QT_BEGIN_NAMESPACE
+class QAction;
+class QMenu;
+QT_END_NAMESPACE
+
+namespace QGUI {
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT
+    //Q_OBJECT
+    QMenu    *fileMenu;
+    QMenu    *helpMenu;
+    QAction  *exitAction;
 
-  protected:
-    void closeEvent(QCloseEvent *event) override;
-
-  private slots:
-    void about();
-
-  private:
+    void createMenuBar();
     void createStatusBar();
+
+public:
+    MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+private slots:
+    void about();
+    void updateMainMenu();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 };
+
+} /* QGUI */
 
 #endif /* __GPGUI_MAINWINDOW_H */
 
