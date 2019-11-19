@@ -1,6 +1,7 @@
 build:
 	mkdir -p build
 	cd build; cmake ../src
+	cd build; make
 
 clang-format:
 	find . -regex '.*\.\(cpp\|hpp\|cu\|c\|h\)' -exec clang-format -style=file -i {} \;
