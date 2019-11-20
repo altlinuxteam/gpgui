@@ -14,8 +14,6 @@ qgui::MainWindow::createMenuBar() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     helpMenu = menuBar()->addMenu(tr("&Help"));
 
-    //connect(fileMenu, &QMenu::aboutToShow, this, &qgui::MainWindow::about);
-
     exitAction = fileMenu->addAction(tr("&Exit"), this, &QWidget::close);
     exitAction->setStatusTip(tr("Exit GPGUI"));
 
@@ -57,11 +55,5 @@ qgui::MainWindow::closeEvent(QCloseEvent *event) {
 void
 qgui::MainWindow::about() {
     QMessageBox::about(this, tr("About GPGUI"), tr("GPGUI about"));
-}
-
-void
-qgui::MainWindow::updateMainMenu() {
-    fileMenu->clear();
-    fileMenu->addAction(exitAction);
 }
 
