@@ -7,6 +7,8 @@
 namespace preg {
 
 struct entry {
+    std::string value_name;
+    std::string key_name;
     uint32_t type;
 };
 

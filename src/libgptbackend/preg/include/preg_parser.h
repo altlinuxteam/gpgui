@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <cstddef>
+#include <vector>
 
 #include "preg_data.h"
 
@@ -27,8 +28,6 @@ class preg_parser {
 public:
 	preg_parser(std::string file_path);
 	entry get_next_entry();
-	key_entry get_next_key_entry();
-	entry read_entry(key_entry kentry);
 
 private:
 	void load_regpol(std::string& file_path);
@@ -36,6 +35,9 @@ private:
 	void read_version();
 	void check_header();
 	void check_version();
+	key_entry get_next_key_entry();
+	entry read_entry(key_entry kentry);
+	std::vector<std::string> split_entry(key_entry kentry);
 };
 
 } /* namespace preg */
