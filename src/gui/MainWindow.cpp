@@ -38,7 +38,9 @@ qgui::MainWindow::MainWindow(QWidget *parent)
 
     QFrame *frame = new QFrame;
     frame->setLayout(layout);
+    frame->setFixedSize(500, 500);
     setCentralWidget(frame);
+    this->adjustSize();
 
     this->createMenuBar();
     this->createStatusBar();
