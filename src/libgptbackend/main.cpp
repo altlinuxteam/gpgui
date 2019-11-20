@@ -1,21 +1,12 @@
-#include "preg_parser.h"
+#include "registry.h"
 
-#include <iostream>
+#include "preg_data.h"
 
-int main(int argc, char **argv) {
-	preg::preg_parser *test_regpol = new preg::preg_parser("Registry.pol");
-	preg::key_entry entry = test_regpol->get_next_key_entry();
-	std::cout << "Entry start: " << entry.start_offset << std::endl;
-	std::cout << "Entry end " << entry.end_offset << std::endl;
-	entry = test_regpol->get_next_key_entry();
-	std::cout << "Entry start: " << entry.start_offset << std::endl;
-	std::cout << "Entry end " << entry.end_offset << std::endl;
-	entry = test_regpol->get_next_key_entry();
-	std::cout << "Entry start: " << entry.start_offset << std::endl;
-	std::cout << "Entry end " << entry.end_offset << std::endl;
-	entry = test_regpol->get_next_key_entry();
-	std::cout << "Entry start: " << entry.start_offset << std::endl;
-	std::cout << "Entry end " << entry.end_offset << std::endl;
-	return 0;
+extern "C" {
+
+const char *regtype2str(uint32_t &regtype) {
+	return preg::regtype2str(regtype).c_str();
+}
+
 }
 

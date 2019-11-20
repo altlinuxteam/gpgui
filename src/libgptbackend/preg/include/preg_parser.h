@@ -6,6 +6,8 @@
 #include <string>
 #include <cstddef>
 
+#include "preg_data.h"
+
 namespace preg {
 
 /* This thing contains offsets for PReg file pointing to '[' and ']'
@@ -24,7 +26,9 @@ class preg_parser {
 	size_t next_entry_start_offset = 8;
 public:
 	preg_parser(std::string file_path);
+	entry get_next_entry();
 	key_entry get_next_key_entry();
+	entry read_entry(key_entry kentry);
 
 private:
 	void load_regpol(std::string& file_path);

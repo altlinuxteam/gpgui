@@ -62,18 +62,22 @@ preg::preg_parser::get_next_key_entry() {
 	preg::key_entry entry;
 	entry.start_offset = this->next_entry_start_offset;
 	entry.end_offset = this->next_entry_start_offset;
+	/* Check if we're not at the end of file */
 	if (this->next_entry_start_offset < this->raw_file_size) {
 		this->polfile.seekg(this->next_entry_start_offset, std::ios::beg);
 		char* range_init = new char[1];
 		this->polfile.read(range_init, 1);
+		/* Check that we're at the beginning of the entry we
+		 * want to parse */
 		if ('[' == *range_init) {
 			std::cout << "Range start found" << std::endl;
 			size_t range_end = this->next_entry_start_offset;
 			char* sym_buf = new char[1];
-			/* Read file byte by byte */
+			/* Read file byte by byte seeking for the end of entry */
 			for (size_t offset = range_end + 1; offset <= this->raw_file_size; offset++) {
 				this->polfile.seekg(offset, std::ios::beg);
 				this->polfile.read(sym_buf, 1);
+				/* Build and return the entry if we're found its end */
 				if (']' == *sym_buf) {
 					std::cout << "Found range end at position: " << offset << std::endl;
 					entry.end_offset = offset;
@@ -87,3 +91,22 @@ preg::preg_parser::get_next_key_entry() {
 		return entry;
 	}
 }
+
+preg::entry
+preg::preg_parser::read_entry(preg::key_entry kentry) {
+	preg::entry appentry;
+	/* Allocate entry buffer equal to the part of file we're going
+	 * to read. */
+	size_t entry_size = kentry.end_offset - kentry.start_offset;
+	char* entry_buffer = new char[entry_size];
+	this->polfile.seekg(kentry.start_offset);
+	this->polfile.read(entry_buffer, entry_size);
+
+	return appentry;
+}
+
+preg::entry
+preg::preg_parser::get_next_entry() {
+	return this->read_entry(this->get_next_key_entry());
+}
+

@@ -16,13 +16,30 @@ set(GPTBACKEND_SOURCES
 	main.cpp
 )
 
+set(TEST_GPTBACKEND_SOURCES
+	test/main.cpp
+)
+
 # Definitions for configuration file
 configure_file("config.h.in" "config.h")
 
-add_executable(gptbackend
+add_executable(gptbackend_test
+	${TEST_GPTBACKEND_SOURCES}
+	${PREG_PARSER_SOURCES}
+)
+
+add_library(gptbackend SHARED
 	${GPTBACKEND_SOURCES}
 	${PREG_PARSER_SOURCES}
 )
+
+target_include_directories(gptbackend_test
+	PUBLIC
+	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}/preg/include
+)
+
 target_include_directories(gptbackend
 	PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
