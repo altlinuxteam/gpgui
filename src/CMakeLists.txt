@@ -11,6 +11,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+add_subdirectory(libgptbackend)
+
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
 set(GPGUI_GUI_SOURCES
@@ -39,6 +41,8 @@ add_executable(gpgui
 target_link_libraries(gpgui
 	Qt5::Core
 	Qt5::Widgets
+
+	gptbackend
 )
 target_include_directories(gpgui
 	PUBLIC
