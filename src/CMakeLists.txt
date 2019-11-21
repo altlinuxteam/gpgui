@@ -6,6 +6,7 @@ set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_C_STANDARD 99)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -16,6 +17,7 @@ add_subdirectory(libgptbackend)
 include_directories(/usr/local/lib)
 
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(Iconv)
 
 set(GPGUI_GUI_SOURCES
 	gui/MainWindow.cpp
@@ -45,7 +47,7 @@ target_link_libraries(gpgui
 	Qt5::Widgets
 
 	gptbackend
-	iconv
+	${Iconv_LIBRARIES}
 )
 target_include_directories(gpgui
 	PUBLIC
