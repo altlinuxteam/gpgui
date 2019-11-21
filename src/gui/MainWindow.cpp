@@ -1,9 +1,9 @@
-#include <QtWidgets>
 #include <QAction>
-#include <QFrame>
-#include <QVBoxLayout>
-#include <QPushButton>
 #include <QCloseEvent>
+#include <QFrame>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QtWidgets>
 
 #include <QTabWidget>
 #include <QTableWidget>
@@ -13,20 +13,19 @@
 
 #include "preg_parser.h"
 
-void
-qgui::MainWindow::createMenuBar() {
+void qgui::MainWindow::createMenuBar() {
     fileMenu = menuBar()->addMenu(tr("&File"));
     helpMenu = menuBar()->addMenu(tr("&Help"));
 
     exitAction = fileMenu->addAction(tr("&Exit"), this, &QWidget::close);
     exitAction->setStatusTip(tr("Exit GPGUI"));
 
-    QAction *aboutAction = helpMenu->addAction(tr("&About"), this, &qgui::MainWindow::about);
+    QAction *aboutAction =
+        helpMenu->addAction(tr("&About"), this, &qgui::MainWindow::about);
     aboutAction->setStatusTip(tr("About GPGUI"));
 }
 
-void
-qgui::MainWindow::createStatusBar() {
+void qgui::MainWindow::createStatusBar() {
     this->statusBar()->showMessage(tr("Ready"));
 }
 
@@ -47,7 +46,7 @@ qgui::MainWindow::MainWindow(QWidget *parent)
     tw->widget(0)->setLayout(layout_regpol_editor);
     layout_regpol_editor->addWidget(regpol_table);
 
-    //QTableWidgetItem *vname = new QTableWidgetItem("Test");
+    // QTableWidgetItem *vname = new QTableWidgetItem("Test");
     QTableWidgetItem *vname = new QTableWidgetItem(pentry.value_name.c_str());
     regpol_table->setItem(0, 0, vname);
 
@@ -64,16 +63,10 @@ qgui::MainWindow::MainWindow(QWidget *parent)
     this->createStatusBar();
 }
 
-qgui::MainWindow::~MainWindow() {
-}
+qgui::MainWindow::~MainWindow() {}
 
-void 
-qgui::MainWindow::closeEvent(QCloseEvent *event) {
-    event->accept();
-}
+void qgui::MainWindow::closeEvent(QCloseEvent *event) { event->accept(); }
 
-void
-qgui::MainWindow::about() {
+void qgui::MainWindow::about() {
     QMessageBox::about(this, tr("About GPGUI"), tr("GPGUI about"));
 }
-

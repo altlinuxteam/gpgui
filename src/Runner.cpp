@@ -1,9 +1,9 @@
 #include "config.h"
 
-#include <QScopedPointer>
 #include <QApplication>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
+#include <QScopedPointer>
 
 #include <QStringList>
 
@@ -11,7 +11,8 @@
 
 #include "Runner.h"
 
-Runner::Runner(int argc, char **argv, QString dispname, QString appname, QString appver, QString orgname, QString orgdomain) {
+Runner::Runner(int argc, char **argv, QString dispname, QString appname,
+               QString appver, QString orgname, QString orgdomain) {
     Q_INIT_RESOURCE(gpgui); // Initialize gpgui.qrc metadata.
 
     /* Please ensure argc and argv lifetime is enough otherwise
@@ -28,8 +29,7 @@ Runner::Runner(int argc, char **argv, QString dispname, QString appname, QString
     this->app->setOrganizationDomain(orgdomain);
 }
 
-void
-Runner::arg_parser() {
+void Runner::arg_parser() {
     QCommandLineParser cli_parser;
     cli_parser.setApplicationDescription(QCoreApplication::applicationName());
     cli_parser.addHelpOption();
@@ -38,8 +38,7 @@ Runner::arg_parser() {
     cli_parser.process(arg_list);
 }
 
-int
-Runner::run() {
+int Runner::run() {
     this->arg_parser();
 
     qgui::MainWindow mainWin;

@@ -1,5 +1,5 @@
 #if !defined(__GPGUI_MAINWINDOW_H)
-#   define __GPGUI_MAINWINDOW_H 1
+#define __GPGUI_MAINWINDOW_H 1
 
 #include <QMainWindow>
 #include <QtWidgets>
@@ -12,26 +12,25 @@ QT_END_NAMESPACE
 namespace qgui {
 
 class MainWindow : public QMainWindow {
-    //Q_OBJECT
-    QMenu    *fileMenu;
-    QMenu    *helpMenu;
-    QAction  *exitAction;
+    // Q_OBJECT
+    QMenu *fileMenu;
+    QMenu *helpMenu;
+    QAction *exitAction;
 
     void createMenuBar();
     void createStatusBar();
 
-public:
+  public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private slots:
+  private slots:
     void about();
 
-protected:
+  protected:
     void closeEvent(QCloseEvent *event) override;
 }; /* class MainWindow */
 
 } /* namespace qgui */
 
 #endif /* __GPGUI_MAINWINDOW_H */
-
