@@ -6,13 +6,30 @@
 
 namespace preg {
 
+const uint16_t REG_NONE                       = 0;
+const uint16_t REG_SZ                         = 1;
+const uint16_t REG_EXPAND_SZ                  = 2;
+const uint16_t REG_BINARY                     = 3;
+const uint16_t REG_DWORD_LITTLE_ENDIAN        = 4;
+const uint16_t REG_DWORD_BIG_ENDIAN           = 5;
+const uint16_t REG_LINK                       = 6;
+const uint16_t REG_MULTI_SZ                   = 7;
+const uint16_t REG_RESOURCE_LIST              = 8;
+const uint16_t REG_FULL_RESOURCE_DESCRIPTOR   = 9;
+const uint16_t REG_RESOURCE_REQUIREMENTS_LIST = 10;
+const uint16_t REG_QWORD                      = 11;
+const uint16_t REG_QWORD_LITTLE_ENDIAN        = 12;
+
 struct entry {
     std::string value_name;
     std::string key_name;
-    uint32_t type;
+    uint16_t type;
+    uint32_t size;
+    uint16_t value;
 };
 
-std::string regtype2str(uint32_t &regtype);
+std::string regtype2str(uint16_t &regtype);
+uint16_t str2regtype(std::string &regtype);
 
 } /* namespace preg */
 

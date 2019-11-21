@@ -1,6 +1,31 @@
 #include "preg_parser.h"
 #include "iconv_wrapper.h"
 
+
+uint16_t
+preg::buffer2uint16(const char * type_buffer) {
+	uint16_t num = static_cast<uint16_t>(
+		static_cast<unsigned char>(type_buffer[1]) << 8 |
+		static_cast<unsigned char>(type_buffer[0])
+	);
+	return num;
+}
+
+uint32_t
+preg::buffer2uint32(const char * type_buffer) {
+	uint32_t num = static_cast<uint32_t>(
+		static_cast<unsigned char>(type_buffer[3]) << 24 |
+		static_cast<unsigned char>(type_buffer[2]) << 16 |
+		static_cast<unsigned char>(type_buffer[1]) << 8 |
+		static_cast<unsigned char>(type_buffer[0])
+	);
+	return num;
+}
+uint16_t
+preg::parse_type(const char * type_buffer) {
+	return preg::buffer2uint16(type_buffer);
+}
+
 preg::preg_parser::preg_parser(std::string file_path) {
     this->file_path = file_path;
 
@@ -130,15 +155,18 @@ preg::entry preg::preg_parser::read_entry(preg::key_entry kentry) {
               << std::endl;
 
     /* We also need converter from UTF-16 to UTF-8 */
-    gptbackend::iconv_wrapper iwrapper("UTF-16LE", "UTF-8//IGNORE");
+    gptbackend::iconv_wrapper iwrapper("UTF-16LE", "UTF-8");
 
     appentry.value_name = iwrapper.convert(results.at(0));
     appentry.key_name = iwrapper.convert(results.at(1));
     std::cout << "Value name " << appentry.value_name << std::endl;
     std::cout << "Key name " << appentry.key_name << std::endl;
-    std::cout << "Type " << results.at(2) << std::endl;
-    std::cout << "Size " << results.at(3) << std::endl;
-    std::cout << "Value " << results.at(3) << std::endl;
+    appentry.type = preg::parse_type(results.at(2).c_str());
+    std::cout << "Type " << preg::regtype2str(appentry.type) << std::endl;
+    appentry.size = preg::buffer2uint32(results.at(3).c_str());
+    appentry.value = preg::buffer2uint16(results.at(4).c_str());
+    std::cout << "Size " << appentry.size << std::endl;
+    std::cout << "Value " << appentry.value << std::endl;
     /* Read type */
     /*	appentry.type = static_cast<uint32_t>(entry_buffer[key_name_offset +
        1]); std::cout << "The type is " << appentry.type << std::endl;

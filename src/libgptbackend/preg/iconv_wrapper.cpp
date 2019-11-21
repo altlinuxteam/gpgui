@@ -34,7 +34,7 @@ std::string gptbackend::iconv_wrapper::convert(std::string from) {
      * copy all contents.
      * It's a bit fun because the length of returned string
      * is still the length of full buffer contents. */
-    char from_buffer[from.length()];
+    /*char from_buffer[from.length()];
     for (size_t i = 0; i <= from.length(); i++) {
         from_buffer[i] = from.c_str()[i];
     }
@@ -55,7 +55,7 @@ std::string gptbackend::iconv_wrapper::convert(std::string from) {
 
     std::string res = std::string(result_pointer);
     std::cout << "Converted " << res << std::endl;
-
+*/
     return from;
     //return res;
 }

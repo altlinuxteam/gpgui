@@ -47,8 +47,12 @@ qgui::MainWindow::MainWindow(QWidget *parent)
     layout_regpol_editor->addWidget(regpol_table);
 
     // QTableWidgetItem *vname = new QTableWidgetItem("Test");
-    QTableWidgetItem *vname = new QTableWidgetItem(pentry.value_name.c_str());
-    regpol_table->setItem(0, 0, vname);
+    std::string regtype = std::string(preg::regtype2str(pentry.type));
+    QTableWidgetItem *vname = new QTableWidgetItem(regtype.c_str());
+    regpol_table->setItem(0, 2, vname);
+    std::string val = std::to_string(pentry.value);
+    QTableWidgetItem *vval = new QTableWidgetItem(val.c_str());
+    regpol_table->setItem(0, 3, vval);
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(tw);
