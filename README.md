@@ -8,5 +8,12 @@
 
 ## Prerequisites
 
+## ALT Linux
+
 * qt5-base-devel
+
+## FreeBSD
+
+* qt5
+* libiconv
 
