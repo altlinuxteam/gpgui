@@ -38,6 +38,7 @@ class preg_parser {
     void check_version();
     key_entry get_next_key_entry();
     entry read_entry(key_entry kentry);
+    std::string strip_square_braces(key_entry kentry);
     std::vector<std::string> split_entry(key_entry kentry);
 };
 

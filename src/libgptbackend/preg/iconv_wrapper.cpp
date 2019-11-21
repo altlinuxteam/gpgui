@@ -29,65 +29,35 @@ gptbackend::iconv_wrapper::~iconv_wrapper() {
 }
 
 std::string gptbackend::iconv_wrapper::convert(std::string from) {
-    std::cout << this->from_encoding << " encoded string:" << std::endl;
-    for (size_t i = 0; i < from.length(); i++) {
-        std::cout << "Symbol (" << from.c_str()[i] << ") code ["
-                  << (int)from.c_str()[i] << "] position " << i << std::endl;
-    }
-
     /* std::string.c_str() always returns NULL-terminated string
      * as said in specification, so we have to use strncpy to
      * copy all contents.
      * It's a bit fun because the length of returned string
      * is still the length of full buffer contents. */
-    size_t from_string_length = (from.length() + 1) * sizeof(char);
-    std::cout << "From length " << from_string_length << std::endl;
-    char rom_string[from_string_length];
-    for (size_t i = 0; i <= from_string_length; i++) {
-        rom_string[i] = from.c_str()[i];
-        std::cout << "Copying [" << i << "] " << (int)from.c_str()[i]
-                  << std::endl;
+    char from_buffer[from.length()];
+    for (size_t i = 0; i <= from.length(); i++) {
+        from_buffer[i] = from.c_str()[i];
     }
-    char *from_string = rom_string;
-    std::cout << "Converting from " << from_string << std::endl;
+    const char * input_string = (char *)from.c_str();
+    size_t input_string_length = (from.length() + 1) * sizeof(char);
+    std::cout << "Converting string " << from << std::endl;
+    std::cout << "Converting char " << std::string(from_buffer) << std::endl;
+    std::cout << "From length " << from.length() << std::endl;
+    std::cout << "Input length " << input_string_length << std::endl;
 
-    char *result = new char[4096];
-    char *result_pointer = result;
-    size_t result_size = 4096 * sizeof(char);
+    char * result = new char[4096];
+    char * result_pointer = result;
+    size_t result_length = 2048 * sizeof(char);
+    std::cout << "Result length " << result_length << std::endl;
 
-    /*#if defined(__FreeBSD__)
-            size_t invalids = 0;
-            size_t conversion_result = __iconv(this->conv,
-                            (char**)&from_string,
-                            &from_string_length,
-                            (char**)&result,
-                            &result_size,
-                            __ICONV_F_HIDE_INVALID,
-                            &invalids);
-    #else
-    #endif*/ /* __FreeBSD__ */
-    // size_t conversion_result = iconv(this->conv, (char**)&from_string,
-    // &from_string_length, (char**)&result, &result_size);
-    size_t conversion_result =
-        iconv(this->conv, &from_string, &from_string_length, &result_pointer,
-              &result_size);
-    std::cout << "Converted " << conversion_result << " symbols" << std::endl;
-    /*#if defined(__FreeBSD__)
-            std::cout << "Invalid conversions " << invalids << " symbols" <<
-    std::endl; #endif*/
+    size_t conversion_result = iconv(this->conv, (char**)&input_string, &input_string_length, (char**)&result, &result_length);
     this->check_conversion_error();
-    std::string conv_result = std::string(result_pointer);
-    std::cout << "Decoded string length: " << conv_result.length() << std::endl;
-    delete[] result_pointer;
 
-    std::cout << this->to_encoding << " decoded string:" << std::endl;
-    for (size_t i = 0; i < conv_result.length(); i++) {
-        std::cout << "Symbol (" << conv_result.c_str()[i] << ") code ["
-                  << (int)conv_result.c_str()[i] << "] position " << i
-                  << std::endl;
-    }
-    // return from;
-    return conv_result;
+    std::string res = std::string(result_pointer);
+    std::cout << "Converted " << res << std::endl;
+
+    return from;
+    //return res;
 }
 
 std::string gptbackend::iconv_wrapper::convert(char *from) {

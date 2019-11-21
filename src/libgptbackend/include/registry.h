@@ -2,6 +2,7 @@
 #define __GPTBACKEND_REGISTRY_H 1
 
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
