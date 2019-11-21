@@ -40,6 +40,8 @@ class preg_parser {
     void read_version();
     void check_header();
     void check_version();
+    char read_byte(size_t abs_file_start_offset);
+    size_t seek_next_separator(size_t abs_file_start_offset);
     key_entry get_next_key_entry();
     entry read_entry(key_entry kentry);
     std::string strip_square_braces(key_entry kentry);

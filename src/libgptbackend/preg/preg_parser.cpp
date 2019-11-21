@@ -106,36 +106,63 @@ namespace {
 	}
 }
 
+char preg::preg_parser::read_byte(size_t abs_file_start_offset) {
+    char symbol;
+    if (abs_file_start_offset < this->raw_file_size) {
+        this->polfile.seekg(abs_file_start_offset, std::ios::beg);
+        this->polfile.read(&symbol, 1);
+    }
+    // FIXME: Else throw exception.
+    return symbol;
+}
+
+size_t preg::preg_parser::seek_next_separator(size_t abs_file_start_offset) {
+    size_t end_offset = abs_file_start_offset;
+    if (abs_file_start_offset < this->raw_file_size) {
+        char sym_buf;
+        for (size_t abs_file_offset = abs_file_start_offset; abs_file_offset <= this->raw_file_size; abs_file_offset++) {
+            sym_buf = this->read_byte(abs_file_offset);
+            if (is_range_start(sym_buf) ||
+                is_preg_entry_separator(sym_buf) ||
+                is_range_end(sym_buf) ||
+                abs_file_offset == this->raw_file_size) {
+
+                end_offset = abs_file_offset;
+                break;
+            }
+        }
+    } else {
+        end_offset = this->raw_file_size;
+    }
+    return end_offset;
+}
+
 preg::key_entry preg::preg_parser::get_next_key_entry() {
     preg::key_entry entry;
     entry.start_offset = this->next_entry_start_offset;
     entry.end_offset = this->next_entry_start_offset;
 
+    std::cout << "Starting at " << this->next_entry_start_offset << " and the next separator is at " << this->seek_next_separator(this->next_entry_start_offset) << std::endl;
+
     /* Check if we're not at the end of file */
     if (this->next_entry_start_offset < this->raw_file_size) {
-        this->polfile.seekg(this->next_entry_start_offset, std::ios::beg);
-        char *range_init = new char[1];
-        this->polfile.read(range_init, 1);
+        char range_init = this->read_byte(this->next_entry_start_offset);
 
         /* Check that we're at the beginning of the entry we
          * want to parse */
-        if (is_range_start(*range_init)) {
+        if (is_range_start(range_init)) {
             std::cout << "Range start found at " << this->next_entry_start_offset << std::endl;
-            //size_t range_end = this->next_entry_start_offset;
-            char *sym_buf = new char[1];
+            char sym_buf;
 
             /* Read file byte by byte seeking for the end of entry */
-            //for (size_t offset = range_end + 1; offset <= this->raw_file_size;
             for (size_t offset = this->next_entry_start_offset + 1; offset <= this->raw_file_size;
                  offset++) {
-                this->polfile.seekg(offset, std::ios::beg);
-                this->polfile.read(sym_buf, 1);
+                sym_buf = this->read_byte(offset);
 
                 /* Build and return the entry if we're found its end */
-                if (is_range_end(*sym_buf)) {
+                if (is_range_end(sym_buf)) {
                     std::cout << "Found range end at position: " << offset
                               << std::endl;
-                    //range_end = offset+2;
                     entry.end_offset = offset + 2;
                     this->next_entry_start_offset = offset + 2;
                     return entry;
@@ -167,10 +194,7 @@ preg::entry preg::preg_parser::read_entry(preg::key_entry kentry) {
     appentry.value = preg::buffer2uint16(results.at(4).c_str());
     std::cout << "Size " << appentry.size << std::endl;
     std::cout << "Value " << appentry.value << std::endl;
-    /* Read type */
-    /*	appentry.type = static_cast<uint32_t>(entry_buffer[key_name_offset +
-       1]); std::cout << "The type is " << appentry.type << std::endl;
-    */
+
     return appentry;
 }
 
