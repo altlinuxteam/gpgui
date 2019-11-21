@@ -1,5 +1,7 @@
 #if !defined (__GPTBACKEND_CONFIG_H)
 #   define __GPTBACKEND_CONFIG_H 1
 
+#include <sys/param.h>
+
 #endif /* __GPTBACKEND_CONFIG_H */
 

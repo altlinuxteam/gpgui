@@ -6,8 +6,12 @@
 #include <QCloseEvent>
 
 #include <QTabWidget>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 #include "MainWindow.h"
+
+#include "preg_parser.h"
 
 void
 qgui::MainWindow::createMenuBar() {
@@ -29,9 +33,23 @@ qgui::MainWindow::createStatusBar() {
 qgui::MainWindow::MainWindow(QWidget *parent)
 //: QMainWindow(parent)
 {
+    preg::preg_parser *test_regpol = new preg::preg_parser("Registry.pol");
+    preg::entry pentry = test_regpol->get_next_entry();
+
+    QVBoxLayout *layout_regpol_editor = new QVBoxLayout;
+    QVBoxLayout *layout_gpo_editor = new QVBoxLayout;
+
     QTabWidget *tw = new QTabWidget;
     tw->addTab(new QWidget, tr("Registry.pol editor"));
     tw->addTab(new QWidget, tr("GPO editor"));
+
+    QTableWidget *regpol_table = new QTableWidget(1, 4, this);
+    tw->widget(0)->setLayout(layout_regpol_editor);
+    layout_regpol_editor->addWidget(regpol_table);
+
+    //QTableWidgetItem *vname = new QTableWidgetItem("Test");
+    QTableWidgetItem *vname = new QTableWidgetItem(pentry.value_name.c_str());
+    regpol_table->setItem(0, 0, vname);
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(tw);

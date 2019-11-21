@@ -1,4 +1,5 @@
 #include "preg_parser.h"
+#include "iconv_wrapper.h"
 
 preg::preg_parser::preg_parser(std::string file_path) {
 	this->file_path = file_path;
@@ -97,7 +98,11 @@ preg::preg_parser::read_entry(preg::key_entry kentry) {
 	preg::entry appentry;
 	std::vector<std::string> results = this->split_entry(kentry);
 	std::cout << "Elements in split entry: " << (int)results.size() << std::endl;
-	appentry.value_name = results.at(0);
+
+	/* We also need converter from UTF-16 to UTF-8 */
+	gptbackend::iconv_wrapper iwrapper("UTF-16LE", "UTF-8");
+
+	appentry.value_name = iwrapper.convert(results.at(0));
 	appentry.key_name = std::string(results.at(1), 1, results.at(1).size() - 4);
 	std::cout << "Valname " << appentry.value_name << std::endl;
 	std::cout << "Keyname " << appentry.key_name << std::endl;
@@ -128,7 +133,7 @@ preg::preg_parser::split_entry(preg::key_entry kentry) {
 	size_t offset = 1;
 	for (size_t i = offset; i < entry_size; i++) {
 		if (';' == entry_buffer[i]) {
-			results.push_back(std::string(bufstring, offset, i-1));
+			results.push_back(std::string(bufstring, (offset+1), i));
 			offset = i;
 		}
 	}

@@ -13,6 +13,8 @@ set(CMAKE_AUTOUIC ON)
 
 add_subdirectory(libgptbackend)
 
+include_directories(/usr/local/lib)
+
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
 set(GPGUI_GUI_SOURCES
@@ -43,12 +45,14 @@ target_link_libraries(gpgui
 	Qt5::Widgets
 
 	gptbackend
+	iconv
 )
 target_include_directories(gpgui
 	PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_SOURCE_DIR}/gui/include
+	${CMAKE_CURRENT_SOURCE_DIR}/libgptbackend/preg/include
 )
 
 install(TARGETS gpgui RUNTIME DESTINATION ${CMAKE_BINARY_DIR})

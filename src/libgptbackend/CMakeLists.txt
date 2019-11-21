@@ -7,9 +7,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+link_directories(/usr/local/lib)
+
 set(PREG_PARSER_SOURCES
 	preg/preg_data.cpp
 	preg/preg_parser.cpp
+	preg/iconv_wrapper.cpp
 )
 
 set(GPTBACKEND_SOURCES
@@ -45,6 +48,14 @@ target_include_directories(gptbackend
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 	${CMAKE_CURRENT_SOURCE_DIR}/preg/include
+)
+
+target_link_libraries(gptbackend_test
+	iconv
+)
+
+target_link_libraries(gptbackend
+	iconv
 )
 
 install(TARGETS gptbackend RUNTIME DESTINATION ${CMAKE_BINARY_DIR})

@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "preg_parser.h"
 
 #include <iostream>

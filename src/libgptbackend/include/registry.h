@@ -3,7 +3,9 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
 extern "C" {
+#endif /* __cplusplus */
 
 const char *regtype2str(uint32_t &regtype);
 
@@ -14,7 +16,9 @@ struct registry_entry {
 	char *data;
 };
 
+#ifdef __cplusplus
 }
+#endif /* __cplusplus */
 
 #endif /* __GPTBACKEND_REGISTRY_H */
 
