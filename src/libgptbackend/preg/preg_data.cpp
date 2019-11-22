@@ -1,3 +1,4 @@
+#include "config.h"
 #include "preg_data.h"
 
 std::string preg::regtype2str(uint16_t &regtype) {

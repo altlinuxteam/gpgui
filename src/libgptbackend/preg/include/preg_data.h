@@ -28,7 +28,16 @@ struct entry {
     uint16_t value;
 };
 
+/**
+ * Convert PReg type value from DWORD into string representation. May
+ * be useful when operating on PReg files from GUI.
+ */
 std::string regtype2str(uint16_t &regtype);
+
+/**
+ * Convert PReg type string representation into DWORD. May be useful
+ * when serializing data.
+ */
 uint16_t str2regtype(std::string &regtype);
 
 } /* namespace preg */
