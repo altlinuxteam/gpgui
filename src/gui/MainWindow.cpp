@@ -61,7 +61,7 @@ qgui::MainWindow::MainWindow(QWidget *parent)
     tw->addTab(new QWidget, tr("Registry.pol editor"));
     tw->addTab(new QWidget, tr("GPO editor"));
 
-    QTableWidget *regpol_table = new QTableWidget(1, 4, this);
+    QTableWidget *regpol_table = new QTableWidget(0, 4, this);
     tw->widget(0)->setLayout(layout_regpol_editor);
     layout_regpol_editor->addWidget(regpol_table);
 
@@ -75,7 +75,7 @@ qgui::MainWindow::MainWindow(QWidget *parent)
 
     QFrame *frame = new QFrame;
     frame->setLayout(layout);
-    frame->setFixedSize(500, 500);
+    frame->setFixedSize(800, 800);
     setCentralWidget(frame);
     this->adjustSize();
 
