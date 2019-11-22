@@ -14,6 +14,7 @@
 
 ## FreeBSD
 
-* qt5
-* libiconv
+* qt5 - Qt5 GUI library
+* libiconv - Character codepage conversion library.
+* catch - Catch2 unit testing framework
 
