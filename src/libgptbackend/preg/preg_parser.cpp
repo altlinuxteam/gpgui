@@ -184,8 +184,10 @@ preg::entry preg::preg_parser::read_entry(preg::key_entry kentry) {
     /* We also need converter from UTF-16 to UTF-8 */
     gptbackend::iconv_wrapper iwrapper("UTF-16LE", "UTF-8");
 
-    appentry.value_name = iwrapper.convert(results.at(0));
-    appentry.key_name = iwrapper.convert(results.at(1));
+    std::string vn = iwrapper.convert(results.at(0));
+    std::string kn = iwrapper.convert(results.at(1));
+    appentry.value_name = std::string(vn, 0, vn.length()-1);
+    appentry.key_name = std::string(kn, 0, kn.length()-1);
     std::cout << "Value name " << appentry.value_name << std::endl;
     std::cout << "Key name " << appentry.key_name << std::endl;
     appentry.type = preg::parse_type(results.at(2).c_str());

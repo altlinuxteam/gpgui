@@ -11,6 +11,7 @@ set(CMAKE_C_STANDARD 99)
 link_directories(/usr/local/lib)
 
 find_package(Iconv)
+find_package(Catch2 REQUIRED)
 
 set(PREG_PARSER_SOURCES
 	preg/preg_data.cpp
@@ -53,13 +54,22 @@ target_include_directories(gptbackend
 	${CMAKE_CURRENT_SOURCE_DIR}/preg/include
 )
 
+include(CTest)
+include(ParseAndAddCatchTests)
+ParseAndAddCatchTests(gptbackend_test)
+
 target_link_libraries(gptbackend_test
-	${Iconv_LIBRARIES}
+	Catch2::Catch2
+	gptbackend
+	Iconv::Iconv
+	"/usr/local/lib/libiconv.so"
 )
 
-target_link_libraries(gptbackend
-	${Iconv_LIBRARIES}
+target_link_libraries(gptbackend PUBLIC
+	Iconv::Iconv
+	"/usr/local/lib/libiconv.so"
 )
 
 install(TARGETS gptbackend LIBRARY DESTINATION ${CMAKE_BINARY_DIR})
+install(TARGETS gptbackend_test RUNTIME DESTINATION ${CMAKE_BINARY_DIR})
 

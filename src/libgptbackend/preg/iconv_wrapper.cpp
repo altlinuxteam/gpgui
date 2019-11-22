@@ -7,12 +7,14 @@
 #include <stdexcept>
 #include <system_error>
 
+#include <vector>
+
 gptbackend::iconv_wrapper::iconv_wrapper(std::string from_encoding,
                                          std::string to_encoding) {
     this->from_encoding = from_encoding;
     this->to_encoding = to_encoding;
     this->conv =
-        iconv_open(this->from_encoding.c_str(), this->to_encoding.c_str());
+        iconv_open(this->to_encoding.c_str(), this->from_encoding.c_str());
     if (this->invalid_open == this->conv) {
         throw std::system_error(errno, std::system_category());
     }
@@ -29,35 +31,60 @@ gptbackend::iconv_wrapper::~iconv_wrapper() {
 }
 
 std::string gptbackend::iconv_wrapper::convert(std::string from) {
-    /* std::string.c_str() always returns NULL-terminated string
-     * as said in specification, so we have to use strncpy to
-     * copy all contents.
-     * It's a bit fun because the length of returned string
-     * is still the length of full buffer contents. */
-    /*char from_buffer[from.length()];
-    for (size_t i = 0; i <= from.length(); i++) {
-        from_buffer[i] = from.c_str()[i];
-    }
-    const char * input_string = (char *)from.c_str();
-    size_t input_string_length = (from.length() + 1) * sizeof(char);
-    std::cout << "Converting string " << from << std::endl;
-    std::cout << "Converting char " << std::string(from_buffer) << std::endl;
-    std::cout << "From length " << from.length() << std::endl;
-    std::cout << "Input length " << input_string_length << std::endl;
-
-    char * result = new char[4096];
-    char * result_pointer = result;
-    size_t result_length = 2048 * sizeof(char);
-    std::cout << "Result length " << result_length << std::endl;
-
-    size_t conversion_result = iconv(this->conv, (char**)&input_string, &input_string_length, (char**)&result, &result_length);
-    this->check_conversion_error();
-
-    std::string res = std::string(result_pointer);
-    std::cout << "Converted " << res << std::endl;
+/*
+Copyright (c) 2011, Yuya Unno
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the Yuya Unno nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-    return from;
-    //return res;
+    bool ignore_error_ = true;
+    size_t buf_size_ = 1024;
+  // copy the string to a buffer as iconv function requires a non-const char
+    // pointer.
+    std::vector<char> in_buf(from.begin(), from.end());
+    char* src_ptr = &in_buf[0];
+    size_t src_size = from.size();
+
+    std::vector<char> buf(buf_size_);
+    std::string dst;
+    while (0 < src_size) {
+      char* dst_ptr = &buf[0];
+      size_t dst_size = buf.size();
+      size_t res = ::iconv(this->conv, &src_ptr, &src_size, &dst_ptr, &dst_size);
+      if (res == (size_t)-1) {
+        if (errno == E2BIG)  {
+          // ignore this error
+        } else if (ignore_error_) {
+          // skip character
+          ++src_ptr;
+          --src_size;
+        } else {
+          this->check_conversion_error();
+        }
+      }
+      dst.append(&buf[0], buf.size() - dst_size);
+    }
+    std::string output;
+    dst.swap(output);
+    return output;
 }
 
 std::string gptbackend::iconv_wrapper::convert(char *from) {
