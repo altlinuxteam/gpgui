@@ -33,6 +33,7 @@ class MainWindow : public QMainWindow {
   private slots:
     void about();
     void open_preg();
+    void save_preg();
 
   protected:
     void closeEvent(QCloseEvent *event) override;
