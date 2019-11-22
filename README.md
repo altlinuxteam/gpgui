@@ -11,6 +11,7 @@
 ## ALT Linux
 
 * qt5-base-devel
+* catch2-devel
 
 ## FreeBSD
 
