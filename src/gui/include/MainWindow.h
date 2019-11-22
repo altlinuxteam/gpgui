@@ -3,22 +3,28 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include <QTableWidget>
+#include <QFileDialog>
 
 QT_BEGIN_NAMESPACE
-class QAction;
 class QMenu;
+class QFileDialog;
+class QTableWidget;
 QT_END_NAMESPACE
 
 namespace qgui {
 
 class MainWindow : public QMainWindow {
     // Q_OBJECT
-    QMenu *fileMenu;
-    QMenu *helpMenu;
-    QAction *exitAction;
+    QMenu *file_menu;
+    QMenu *help_menu;
 
-    void createMenuBar();
-    void createStatusBar();
+    QFileDialog *preg_open_dialog;
+
+    QTableWidget *regpol_table;
+
+    void create_menu_bar();
+    void create_status_bar();
 
   public:
     MainWindow(QWidget *parent = 0);
@@ -26,6 +32,7 @@ class MainWindow : public QMainWindow {
 
   private slots:
     void about();
+    void open_preg();
 
   protected:
     void closeEvent(QCloseEvent *event) override;
