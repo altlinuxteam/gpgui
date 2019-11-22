@@ -12,21 +12,33 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+# Suppress warnings on FindDoxygen.cmake
+cmake_policy(SET CMP0054 NEW)
+
 add_subdirectory(libgptbackend)
 
 include_directories(/usr/local/lib)
 
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
-find_package(Iconv)
+find_package(Qt5 COMPONENTS Core Widgets REQUIRED) # GUI
+find_package(Iconv) # For libgptbackend
+find_package(Doxygen) # Code documentation
+
+set(GPGUI_GUI_HEADER_DIRS
+	${CMAKE_CURRENT_SOURCE_DIR}/gui/include
+)
 
 set(GPGUI_GUI_SOURCES
-	gui/MainWindow.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/gui/MainWindow.cpp
+)
+
+set(GPGUI_HEADER_DIRS
+	${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 set(GPGUI_SOURCES
-	main.cpp
-	Runner.cpp
-	gpgui.qrc
+	${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Runner.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/gpgui.qrc
 )
 
 # Definitions for configuration file
@@ -42,6 +54,15 @@ add_executable(gpgui
 	${GPGUI_SOURCES}
 	${GPGUI_GUI_SOURCES}
 )
+
+doxygen_add_docs(gpgui_doc
+	${GPGUI_HEADER_DIRS}
+	${GPGUI_GUI_HEADER_DIRS}
+	COMMENT
+	"Group Policy Editor GUI documentation"
+)
+
+
 target_link_libraries(gpgui
 	Qt5::Core
 	Qt5::Widgets
@@ -52,8 +73,8 @@ target_link_libraries(gpgui
 target_include_directories(gpgui
 	PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/include
-	${CMAKE_CURRENT_SOURCE_DIR}/gui/include
+	${GPGUI_HEADER_DIRS}
+	${GPGUI_GUI_HEADER_DIRS}
 	${CMAKE_CURRENT_SOURCE_DIR}/libgptbackend/preg/include
 )
 

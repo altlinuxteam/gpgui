@@ -8,23 +8,36 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_C_STANDARD 99)
 
+set(CMAKE_AUTOMOC OFF)
+set(CMAKE_AUTOUIC OFF)
+set(CMAKE_AUTORCC OFF)
+
+# Suppress warnings on FindDoxygen.cmake
+cmake_policy(SET CMP0054 NEW)
+
 link_directories(/usr/local/lib)
 
-find_package(Iconv)
-find_package(Catch2 REQUIRED)
+find_package(Iconv) # PReg key name charset conversion
+find_package(Catch2 REQUIRED) # Unit tests
+find_package(Doxygen) # Documentation
 
 set(PREG_PARSER_SOURCES
-	preg/preg_data.cpp
-	preg/preg_parser.cpp
-	preg/iconv_wrapper.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/preg/preg_data.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/preg/preg_parser.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/preg/iconv_wrapper.cpp
+)
+
+set(GPTBACKEND_HEADER_DIRS
+	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}/preg/include
 )
 
 set(GPTBACKEND_SOURCES
-	main.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 )
 
 set(TEST_GPTBACKEND_SOURCES
-	test/main.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/test/main.cpp
 )
 
 # Definitions for configuration file
@@ -40,18 +53,22 @@ add_library(gptbackend SHARED
 	${PREG_PARSER_SOURCES}
 )
 
+doxygen_add_docs(gptbackend_doc
+	${GPTBACKEND_HEADER_DIRS}
+	COMMENT
+	"libgptbackend documentation"
+)
+
 target_include_directories(gptbackend_test
 	PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/include
-	${CMAKE_CURRENT_SOURCE_DIR}/preg/include
+	${GPTBACKEND_HEADER_DIRS}
 )
 
 target_include_directories(gptbackend
 	PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/include
-	${CMAKE_CURRENT_SOURCE_DIR}/preg/include
+	${GPTBACKEND_HEADER_DIRS}
 )
 
 include(CTest)
