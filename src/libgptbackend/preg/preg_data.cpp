@@ -81,7 +81,7 @@ uint16_t preg::str2regtype(std::string &regtype) {
     if ("REG_BINARY" == regtype) {
         result = preg::REG_BINARY;
     }
-    if ("REG_DWORD_LITTLE_ENDIAN" == regtype) {
+    if ("REG_DWORD_LITTLE_ENDIAN" == regtype || "REG_DWORD" == regtype) {
         result = preg::REG_DWORD_LITTLE_ENDIAN;
     }
     if ("REG_DWORD_BIG_ENDIAN" == regtype) {
