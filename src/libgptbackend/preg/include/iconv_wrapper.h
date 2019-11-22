@@ -7,6 +7,10 @@
 
 namespace gptbackend {
 
+/**
+ * Wrapper for POSIX iconv functionality to ease the access from C++
+ * and provide a convenient way to operate on std::string buffers.
+ */
 class iconv_wrapper {
     /* C++ reinterpret_cast<> and static_cast<> can't be used in
      * this case */
@@ -20,14 +24,19 @@ class iconv_wrapper {
     std::string from_encoding;
     std::string to_encoding;
 
-  public:
+public:
     iconv_wrapper(std::string from_encoding, std::string to_encoding);
     ~iconv_wrapper();
 
+    /**
+     * Convert std::string to another format.
+     */
     std::string convert(std::string from);
-    std::string convert(char *from);
 
-  private:
+private:
+    /**
+     * Check if there were conversion errors.
+     */
     void check_conversion_error();
 }; /* class iconv_wrapper */
 

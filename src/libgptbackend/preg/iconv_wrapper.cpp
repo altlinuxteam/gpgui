@@ -1,5 +1,5 @@
-#include "iconv_wrapper.h"
 #include "config.h"
+#include "iconv_wrapper.h"
 #include <cstring>
 #include <errno.h>
 #include <fstream>
@@ -85,10 +85,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     std::string output;
     dst.swap(output);
     return output;
-}
-
-std::string gptbackend::iconv_wrapper::convert(char *from) {
-    return std::string(from);
 }
 
 void gptbackend::iconv_wrapper::check_conversion_error() {
