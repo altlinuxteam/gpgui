@@ -1,3 +1,4 @@
+#include "config.h"
 #include "preg_parser.h"
 #include "iconv_wrapper.h"
 

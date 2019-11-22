@@ -34,7 +34,7 @@ class preg_parser {
     preg_parser(std::string file_path);
     entry get_next_entry();
 
-  private:
+  protected:
     void load_regpol(std::string &file_path);
     void read_header();
     void read_version();
