@@ -7,14 +7,14 @@
 #include <QVBoxLayout>
 #include <QtWidgets>
 
+#include <QComboBox>
+#include <QHeaderView>
 #include <QTabWidget>
 #include <QTableWidget>
-#include <QHeaderView>
 #include <QTableWidgetItem>
-#include <QComboBox>
 
-#include <QFileDialog>
 #include <QDir>
+#include <QFileDialog>
 
 #include "MainWindow.h"
 
@@ -22,21 +22,19 @@
 
 namespace {
 
-QStringList regtype_list {
-    "REG_NONE",
-    "REG_SZ",
-    "REG_EXPAND_SZ",
-    "REG_BINARY",
-    "REG_DWORD_LITTLE_ENDIAN",
-    "REG_DWORD_BIG_ENDIAN",
-    "REG_LINK",
-    "REG_MULTI_SZ",
-    "REG_RESOURCE_LIST",
-    "REG_FULL_RESOURCE_DESCRIPTOR",
-    "REG_RESOURCE_REQUIREMENTS_LIST",
-    "REG_QWORD",
-    "REG_QWORD_LITTLE_ENDIAN"
-};
+QStringList regtype_list{"REG_NONE",
+                         "REG_SZ",
+                         "REG_EXPAND_SZ",
+                         "REG_BINARY",
+                         "REG_DWORD_LITTLE_ENDIAN",
+                         "REG_DWORD_BIG_ENDIAN",
+                         "REG_LINK",
+                         "REG_MULTI_SZ",
+                         "REG_RESOURCE_LIST",
+                         "REG_FULL_RESOURCE_DESCRIPTOR",
+                         "REG_RESOURCE_REQUIREMENTS_LIST",
+                         "REG_QWORD",
+                         "REG_QWORD_LITTLE_ENDIAN"};
 
 } /* namespace */
 
@@ -44,13 +42,17 @@ void qgui::MainWindow::create_menu_bar() {
     file_menu = menuBar()->addMenu(tr("&File"));
     help_menu = menuBar()->addMenu(tr("&Help"));
 
-    QAction *open_preg_action = file_menu->addAction(tr("&Open PReg file"), this, &qgui::MainWindow::open_preg);
+    QAction *open_preg_action = file_menu->addAction(
+        tr("&Open PReg file"), this, &qgui::MainWindow::open_preg);
     open_preg_action->setStatusTip(tr("Open PReg file for editing"));
-    QAction *save_preg_action = file_menu->addAction(tr("&Save PReg file"), this, &qgui::MainWindow::save_preg);
+    QAction *save_preg_action = file_menu->addAction(
+        tr("&Save PReg file"), this, &qgui::MainWindow::save_preg);
     save_preg_action->setStatusTip(tr("Save active PReg file"));
-    QAction *save_reg_action = file_menu->addAction(tr("&Save REG file"), this, &qgui::MainWindow::save_dotreg);
+    QAction *save_reg_action = file_menu->addAction(
+        tr("&Save REG file"), this, &qgui::MainWindow::save_dotreg);
     save_reg_action->setStatusTip(tr("Save active PReg file as REG"));
-    QAction *exit_action = file_menu->addAction(tr("&Exit"), this, &QWidget::close);
+    QAction *exit_action =
+        file_menu->addAction(tr("&Exit"), this, &QWidget::close);
     exit_action->setStatusTip(tr("Exit GPGUI"));
 
     QAction *about_action =
@@ -65,7 +67,8 @@ void qgui::MainWindow::create_status_bar() {
 qgui::MainWindow::MainWindow(QWidget *parent)
 //: QMainWindow(parent)
 {
-    this->preg_open_dialog = new QFileDialog(this, tr("Select PReg file to edit"), QDir::currentPath(),
+    this->preg_open_dialog = new QFileDialog(
+        this, tr("Select PReg file to edit"), QDir::currentPath(),
         "PReg files (*.pol);;All files (*.*)");
     this->preg_open_dialog->setFileMode(QFileDialog::ExistingFile);
 
@@ -77,11 +80,11 @@ qgui::MainWindow::MainWindow(QWidget *parent)
     tw->addTab(new QWidget, tr("GPO editor"));
 
     this->regpol_table = new QTableWidget(0, 4, this);
-    QStringList labels{ "Value name", "Key name", "Type", "Value" };
+    QStringList labels{"Value name", "Key name", "Type", "Value"};
     this->regpol_table->setHorizontalHeaderLabels(labels);
     this->regpol_table->horizontalHeader()->setStretchLastSection(true);
-    //this->regpol_table->horizontalHeader()->sectionResizeMode(QHeaderView::Stretch);
-    //this->regpol_table->resizeColumnsToContents();
+    // this->regpol_table->horizontalHeader()->sectionResizeMode(QHeaderView::Stretch);
+    // this->regpol_table->resizeColumnsToContents();
     tw->widget(0)->setLayout(layout_regpol_editor);
     layout_regpol_editor->addWidget(regpol_table);
 
@@ -138,7 +141,8 @@ void qgui::MainWindow::open_preg() {
     if (this->preg_open_dialog->exec()) {
         preg_file_name = this->preg_open_dialog->selectedFiles();
 
-        preg::preg_parser *test_regpol = new preg::preg_parser(preg_file_name[0].toStdString());
+        preg::preg_parser *test_regpol =
+            new preg::preg_parser(preg_file_name[0].toStdString());
         this->regpol_table->setRowCount(0);
 
         preg::entry pentry = test_regpol->get_next_entry();
@@ -155,9 +159,6 @@ void qgui::MainWindow::open_preg() {
     }
 }
 
-void qgui::MainWindow::save_preg() {
-}
+void qgui::MainWindow::save_preg() {}
 
-void qgui::MainWindow::save_dotreg() {
-}
-
+void qgui::MainWindow::save_dotreg() {}

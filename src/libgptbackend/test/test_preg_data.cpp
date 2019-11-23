@@ -1,5 +1,5 @@
-#include <catch2/catch.hpp>
 #include "config.h"
+#include <catch2/catch.hpp>
 
 #include "preg_data.h"
 
@@ -139,4 +139,3 @@ TEST_CASE("Convert REG_QWORD_LITTLE_ENDIAN to 12", "[str2regtype]") {
     std::string regname = "REG_QWORD_LITTLE_ENDIAN";
     REQUIRE(preg::str2regtype(regname) == regtype);
 }
-

@@ -1,5 +1,5 @@
-#include "config.h"
 #include "preg_data.h"
+#include "config.h"
 
 std::string preg::regtype2str(uint16_t &regtype) {
     std::string result = "UNKNOWN";
@@ -111,4 +111,3 @@ uint16_t preg::str2regtype(std::string &regtype) {
 
     return result;
 } /* uint16_t preg::str2regtype(std::string &regtype) */
-

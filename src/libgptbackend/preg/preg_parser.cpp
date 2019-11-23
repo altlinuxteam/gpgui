@@ -1,30 +1,24 @@
-#include "config.h"
 #include "preg_parser.h"
+#include "config.h"
 #include "iconv_wrapper.h"
 
-
-uint16_t
-preg::buffer2uint16(const char * type_buffer) {
-	uint16_t num = static_cast<uint16_t>(
-		static_cast<unsigned char>(type_buffer[1]) << 8 |
-		static_cast<unsigned char>(type_buffer[0])
-	);
-	return num;
+uint16_t preg::buffer2uint16(const char *type_buffer) {
+    uint16_t num =
+        static_cast<uint16_t>(static_cast<unsigned char>(type_buffer[1]) << 8 |
+                              static_cast<unsigned char>(type_buffer[0]));
+    return num;
 }
 
-uint32_t
-preg::buffer2uint32(const char * type_buffer) {
-	uint32_t num = static_cast<uint32_t>(
-		static_cast<unsigned char>(type_buffer[3]) << 24 |
-		static_cast<unsigned char>(type_buffer[2]) << 16 |
-		static_cast<unsigned char>(type_buffer[1]) << 8 |
-		static_cast<unsigned char>(type_buffer[0])
-	);
-	return num;
+uint32_t preg::buffer2uint32(const char *type_buffer) {
+    uint32_t num =
+        static_cast<uint32_t>(static_cast<unsigned char>(type_buffer[3]) << 24 |
+                              static_cast<unsigned char>(type_buffer[2]) << 16 |
+                              static_cast<unsigned char>(type_buffer[1]) << 8 |
+                              static_cast<unsigned char>(type_buffer[0]));
+    return num;
 }
-uint16_t
-preg::parse_type(const char * type_buffer) {
-	return preg::buffer2uint16(type_buffer);
+uint16_t preg::parse_type(const char *type_buffer) {
+    return preg::buffer2uint16(type_buffer);
 }
 
 preg::preg_parser::preg_parser(std::string file_path) {
@@ -85,27 +79,27 @@ void preg::preg_parser::check_version() {
 }
 
 namespace {
-	bool is_range_start(char symbol) {
-		if ('[' == symbol) {
-			return true;
-		}
-		return false;
-	}
-
-	bool is_range_end(char symbol) {
-		if (']' == symbol) {
-			return true;
-		}
-		return false;
-	}
-
-	bool is_preg_entry_separator(char symbol) {
-		if (';' == symbol) {
-			return true;
-		}
-		return false;
-	}
+bool is_range_start(char symbol) {
+    if ('[' == symbol) {
+        return true;
+    }
+    return false;
 }
+
+bool is_range_end(char symbol) {
+    if (']' == symbol) {
+        return true;
+    }
+    return false;
+}
+
+bool is_preg_entry_separator(char symbol) {
+    if (';' == symbol) {
+        return true;
+    }
+    return false;
+}
+} // namespace
 
 char preg::preg_parser::read_byte(size_t abs_file_start_offset) {
     char symbol;
@@ -121,10 +115,10 @@ size_t preg::preg_parser::seek_next_separator(size_t abs_file_start_offset) {
     size_t end_offset = abs_file_start_offset;
     if (abs_file_start_offset < this->raw_file_size) {
         char sym_buf;
-        for (size_t abs_file_offset = abs_file_start_offset; abs_file_offset <= this->raw_file_size; abs_file_offset++) {
+        for (size_t abs_file_offset = abs_file_start_offset;
+             abs_file_offset <= this->raw_file_size; abs_file_offset++) {
             sym_buf = this->read_byte(abs_file_offset);
-            if (is_range_start(sym_buf) ||
-                is_preg_entry_separator(sym_buf) ||
+            if (is_range_start(sym_buf) || is_preg_entry_separator(sym_buf) ||
                 is_range_end(sym_buf) ||
                 abs_file_offset == this->raw_file_size) {
 
@@ -143,7 +137,10 @@ preg::key_entry preg::preg_parser::get_next_key_entry() {
     entry.start_offset = this->next_entry_start_offset;
     entry.end_offset = this->next_entry_start_offset;
 
-    std::cout << "Starting at " << this->next_entry_start_offset << " and the next separator is at " << this->seek_next_separator(this->next_entry_start_offset) << std::endl;
+    std::cout << "Starting at " << this->next_entry_start_offset
+              << " and the next separator is at "
+              << this->seek_next_separator(this->next_entry_start_offset)
+              << std::endl;
 
     /* Check if we're not at the end of file */
     if (this->next_entry_start_offset < this->raw_file_size) {
@@ -152,12 +149,13 @@ preg::key_entry preg::preg_parser::get_next_key_entry() {
         /* Check that we're at the beginning of the entry we
          * want to parse */
         if (is_range_start(range_init)) {
-            std::cout << "Range start found at " << this->next_entry_start_offset << std::endl;
+            std::cout << "Range start found at "
+                      << this->next_entry_start_offset << std::endl;
             char sym_buf;
 
             /* Read file byte by byte seeking for the end of entry */
-            for (size_t offset = this->next_entry_start_offset + 1; offset <= this->raw_file_size;
-                 offset++) {
+            for (size_t offset = this->next_entry_start_offset + 1;
+                 offset <= this->raw_file_size; offset++) {
                 sym_buf = this->read_byte(offset);
 
                 /* Build and return the entry if we're found its end */
@@ -187,8 +185,8 @@ preg::entry preg::preg_parser::read_entry(preg::key_entry kentry) {
 
     std::string vn = iwrapper.convert(results.at(0));
     std::string kn = iwrapper.convert(results.at(1));
-    appentry.value_name = std::string(vn, 0, vn.length()-1);
-    appentry.key_name = std::string(kn, 0, kn.length()-1);
+    appentry.value_name = std::string(vn, 0, vn.length() - 1);
+    appentry.key_name = std::string(kn, 0, kn.length() - 1);
     std::cout << "Value name " << appentry.value_name << std::endl;
     std::cout << "Key name " << appentry.key_name << std::endl;
     appentry.type = preg::parse_type(results.at(2).c_str());
@@ -206,9 +204,9 @@ preg::entry preg::preg_parser::get_next_entry() {
 }
 
 std::string preg::preg_parser::strip_square_braces(preg::key_entry kentry) {
-    size_t entry_size = (kentry.end_offset-2) - (kentry.start_offset+2);
+    size_t entry_size = (kentry.end_offset - 2) - (kentry.start_offset + 2);
     char *entry_buffer = new char[entry_size];
-    this->polfile.seekg((kentry.start_offset+2));
+    this->polfile.seekg((kentry.start_offset + 2));
     this->polfile.read(entry_buffer, entry_size);
     std::string bufstring(entry_buffer, entry_size);
     return bufstring;
@@ -222,7 +220,8 @@ preg::preg_parser::split_entry(preg::key_entry kentry) {
 
     size_t offset = 0;
     for (size_t i = 0; i <= bufstring.length(); i++) {
-	//std::cout << "[" << i << "] = (" << (int)raw_buffer[i] << "] " << raw_buffer[i] << std::endl;
+        // std::cout << "[" << i << "] = (" << (int)raw_buffer[i] << "] " <<
+        // raw_buffer[i] << std::endl;
         if (is_preg_entry_separator(raw_buffer[i]) || i == bufstring.length()) {
             size_t split_length = i - offset;
             std::string buf = std::string(bufstring, offset, split_length);
@@ -230,7 +229,7 @@ preg::preg_parser::split_entry(preg::key_entry kentry) {
             offset = i + 2; // Skip separator
             /*if (is_range_end(raw_buffer[i]) || i == bufstring.length()) {
             break;
-	    }*/
+            }*/
             i++;
         }
     }

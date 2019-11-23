@@ -9,7 +9,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 const char *regtype2str(uint16_t &regtype);
-uint16_t str2regtype(const char * regtype);
+uint16_t str2regtype(const char *regtype);
 
 struct registry_entry {
     char *keyname;

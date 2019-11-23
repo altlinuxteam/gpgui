@@ -24,7 +24,7 @@ class iconv_wrapper {
     std::string from_encoding;
     std::string to_encoding;
 
-public:
+  public:
     iconv_wrapper(std::string from_encoding, std::string to_encoding);
     ~iconv_wrapper();
 
@@ -33,7 +33,7 @@ public:
      */
     std::string convert(std::string from);
 
-private:
+  private:
     /**
      * Check if there were conversion errors.
      */
