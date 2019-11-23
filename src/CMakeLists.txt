@@ -19,6 +19,8 @@ add_subdirectory(libgptbackend)
 
 include_directories(/usr/local/lib)
 
+set(Iconv_IS_BUILT_IN FALSE)
+
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED) # GUI
 find_package(Iconv) # For libgptbackend
 find_package(Doxygen) # Code documentation
@@ -66,9 +68,9 @@ doxygen_add_docs(gpgui_doc
 target_link_libraries(gpgui
 	Qt5::Core
 	Qt5::Widgets
+	Iconv::Iconv
 
 	gptbackend
-	${Iconv_LIBRARIES}
 )
 target_include_directories(gpgui
 	PUBLIC

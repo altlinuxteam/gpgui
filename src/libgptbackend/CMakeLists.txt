@@ -17,14 +17,17 @@ cmake_policy(SET CMP0054 NEW)
 
 link_directories(/usr/local/lib)
 
+set(Iconv_IS_BUILT_IN FALSE)
+
 find_package(Iconv) # PReg key name charset conversion
 find_package(Catch2 REQUIRED) # Unit tests
 find_package(Doxygen) # Documentation
 
 set(PREG_PARSER_SOURCES
+	${CMAKE_CURRENT_SOURCE_DIR}/preg/iconv_wrapper.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/preg/preg_data.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/preg/preg_parser.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/preg/iconv_wrapper.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/preg/preg_writer.cpp
 )
 
 set(GPTBACKEND_HEADER_DIRS
@@ -79,12 +82,10 @@ target_link_libraries(gptbackend_test
 	Catch2::Catch2
 	gptbackend
 	Iconv::Iconv
-	"/usr/local/lib/libiconv.so"
 )
 
 target_link_libraries(gptbackend PUBLIC
 	Iconv::Iconv
-	"/usr/local/lib/libiconv.so"
 )
 
 install(TARGETS gptbackend LIBRARY DESTINATION ${CMAKE_BINARY_DIR})
