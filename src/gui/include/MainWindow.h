@@ -34,6 +34,7 @@ class MainWindow : public QMainWindow {
     void about();
     void open_preg();
     void save_preg();
+    void save_dotreg();
 
   protected:
     void closeEvent(QCloseEvent *event) override;

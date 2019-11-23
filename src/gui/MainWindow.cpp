@@ -9,7 +9,9 @@
 
 #include <QTabWidget>
 #include <QTableWidget>
+#include <QHeaderView>
 #include <QTableWidgetItem>
+#include <QComboBox>
 
 #include <QFileDialog>
 #include <QDir>
@@ -17,6 +19,26 @@
 #include "MainWindow.h"
 
 #include "preg_parser.h"
+
+namespace {
+
+QStringList regtype_list {
+    "REG_NONE",
+    "REG_SZ",
+    "REG_EXPAND_SZ",
+    "REG_BINARY",
+    "REG_DWORD_LITTLE_ENDIAN",
+    "REG_DWORD_BIG_ENDIAN",
+    "REG_LINK",
+    "REG_MULTI_SZ",
+    "REG_RESOURCE_LIST",
+    "REG_FULL_RESOURCE_DESCRIPTOR",
+    "REG_RESOURCE_REQUIREMENTS_LIST",
+    "REG_QWORD",
+    "REG_QWORD_LITTLE_ENDIAN"
+};
+
+} /* namespace */
 
 void qgui::MainWindow::create_menu_bar() {
     file_menu = menuBar()->addMenu(tr("&File"));
@@ -26,6 +48,8 @@ void qgui::MainWindow::create_menu_bar() {
     open_preg_action->setStatusTip(tr("Open PReg file for editing"));
     QAction *save_preg_action = file_menu->addAction(tr("&Save PReg file"), this, &qgui::MainWindow::save_preg);
     save_preg_action->setStatusTip(tr("Save active PReg file"));
+    QAction *save_reg_action = file_menu->addAction(tr("&Save REG file"), this, &qgui::MainWindow::save_dotreg);
+    save_reg_action->setStatusTip(tr("Save active PReg file as REG"));
     QAction *exit_action = file_menu->addAction(tr("&Exit"), this, &QWidget::close);
     exit_action->setStatusTip(tr("Exit GPGUI"));
 
@@ -55,6 +79,9 @@ qgui::MainWindow::MainWindow(QWidget *parent)
     this->regpol_table = new QTableWidget(0, 4, this);
     QStringList labels{ "Value name", "Key name", "Type", "Value" };
     this->regpol_table->setHorizontalHeaderLabels(labels);
+    this->regpol_table->horizontalHeader()->setStretchLastSection(true);
+    //this->regpol_table->horizontalHeader()->sectionResizeMode(QHeaderView::Stretch);
+    //this->regpol_table->resizeColumnsToContents();
     tw->widget(0)->setLayout(layout_regpol_editor);
     layout_regpol_editor->addWidget(regpol_table);
 
@@ -84,6 +111,12 @@ void preg_entry2table(QTableWidget *regpol_table, preg::entry &pentry) {
     std::string regtype = std::string(preg::regtype2str(pentry.type));
     std::string val = std::to_string(pentry.value);
 
+    QComboBox *regtype_box = new QComboBox();
+    regtype_box->addItems(regtype_list);
+    regtype_box->setEditable(false);
+    regtype_box->setMaxVisibleItems(6);
+    regtype_box->setCurrentIndex(static_cast<int>(pentry.type));
+
     QTableWidgetItem *vname = new QTableWidgetItem(pentry.value_name.c_str());
     QTableWidgetItem *kname = new QTableWidgetItem(pentry.key_name.c_str());
     QTableWidgetItem *vtype = new QTableWidgetItem(regtype.c_str());
@@ -93,7 +126,7 @@ void preg_entry2table(QTableWidget *regpol_table, preg::entry &pentry) {
 
     regpol_table->setItem(regpol_table->rowCount() - 1, 0, vname);
     regpol_table->setItem(regpol_table->rowCount() - 1, 1, kname);
-    regpol_table->setItem(regpol_table->rowCount() - 1, 2, vtype);
+    regpol_table->setCellWidget(regpol_table->rowCount() - 1, 2, regtype_box);
     regpol_table->setItem(regpol_table->rowCount() - 1, 3, vval);
 }
 } /* namespace */
@@ -123,5 +156,8 @@ void qgui::MainWindow::open_preg() {
 }
 
 void qgui::MainWindow::save_preg() {
+}
+
+void qgui::MainWindow::save_dotreg() {
 }
 
