@@ -117,6 +117,12 @@ TEST_CASE("Convert REG_MULTI_SZ to 7", "[str2regtype]") {
 }
 
 TEST_CASE("Convert REG_RESOURCE_LIST to 8", "[str2regtype]") {
+    const uint16_t regtype = 8;
+    std::string regname = "REG_RESOURCE_LIST";
+    REQUIRE(preg::str2regtype(regname) == regtype);
+}
+
+TEST_CASE("Convert REG_FULL_RESOURCE_DESCRIPTOR to 9", "[regtype2str]") {
     const uint16_t regtype = 9;
     std::string regname = "REG_FULL_RESOURCE_DESCRIPTOR";
     REQUIRE(preg::str2regtype(regname) == regtype);
