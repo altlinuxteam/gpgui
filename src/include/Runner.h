@@ -31,8 +31,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(__GPGUI_RUNNER_H)
 #define __GPGUI_RUNNER_H 1
 
-#include "config.h"
-
 #include <QApplication>
 #include <QString>
 
