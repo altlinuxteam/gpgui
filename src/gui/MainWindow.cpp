@@ -83,8 +83,6 @@ qgui::MainWindow::MainWindow(QWidget *parent)
     QStringList labels{"Value name", "Key name", "Type", "Value"};
     this->regpol_table->setHorizontalHeaderLabels(labels);
     this->regpol_table->horizontalHeader()->setStretchLastSection(true);
-    // this->regpol_table->horizontalHeader()->sectionResizeMode(QHeaderView::Stretch);
-    // this->regpol_table->resizeColumnsToContents();
     tw->widget(0)->setLayout(layout_regpol_editor);
     layout_regpol_editor->addWidget(regpol_table);
 
@@ -156,6 +154,9 @@ void qgui::MainWindow::open_preg() {
         preg_entry2table(this->regpol_table, pentry4);
 
         this->statusBar()->showMessage(tr("Loaded PReg file"));
+
+        this->regpol_table->horizontalHeader()->sectionResizeMode(QHeaderView::Stretch);
+        this->regpol_table->resizeColumnsToContents();
     }
 }
 
