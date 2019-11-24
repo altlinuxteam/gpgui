@@ -42,6 +42,7 @@ set(GPTBACKEND_SOURCES
 set(TEST_GPTBACKEND_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/test/main.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/test/test_preg_data.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/test/test_preg_writer.cpp
 )
 
 # Definitions for configuration file

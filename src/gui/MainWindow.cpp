@@ -1,3 +1,33 @@
+/*
+Copyright (c) 2019 Igor Chudov <nir@sarfsc.ru>
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the Igor Chudov nor the
+   names of its contributors may be used to endorse or promote products
+   derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
 #include "config.h"
 
 #include <QAction>
@@ -95,6 +125,9 @@ qgui::MainWindow::MainWindow(QWidget *parent)
 
     this->create_menu_bar();
     this->create_status_bar();
+
+    /* Create dialog windows */
+    this->reg_dword_dialog = new qgui::REG_DWORD_Dialog();
 }
 
 qgui::MainWindow::~MainWindow() {}
@@ -135,8 +168,9 @@ void qgui::MainWindow::open_preg() {
     if (this->preg_open_dialog->exec()) {
         preg_file_name = this->preg_open_dialog->selectedFiles();
 
+        std::string file_name = preg_file_name[0].toStdString();
         preg::preg_parser *test_regpol =
-            new preg::preg_parser(preg_file_name[0].toStdString());
+            new preg::preg_parser(file_name);
         this->regpol_table->setRowCount(0);
 
         preg::entry pentry = test_regpol->get_next_entry();
@@ -144,10 +178,10 @@ void qgui::MainWindow::open_preg() {
         preg::entry pentry3 = test_regpol->get_next_entry();
         preg::entry pentry4 = test_regpol->get_next_entry();
 
-        this->preg_entry2table(this->regpol_table, pentry);
-        this->preg_entry2table(this->regpol_table, pentry2);
-        this->preg_entry2table(this->regpol_table, pentry3);
-        this->preg_entry2table(this->regpol_table, pentry4);
+        this->preg_entry2table(pentry);
+        this->preg_entry2table(pentry2);
+        this->preg_entry2table(pentry3);
+        this->preg_entry2table(pentry4);
 
         this->statusBar()->showMessage(tr("Loaded PReg file"));
 
@@ -159,3 +193,7 @@ void qgui::MainWindow::open_preg() {
 void qgui::MainWindow::save_preg() {}
 
 void qgui::MainWindow::save_dotreg() {}
+
+void qgui::MainWindow::edit_reg_dword_dialog() {
+}
+
