@@ -31,7 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "preg_data.h"
 #include "config.h"
 
-std::string preg::regtype2str(uint16_t &regtype) {
+std::string preg::regtype2str(uint32_t &regtype) {
     std::string result = "UNKNOWN";
 
     switch (regtype) {
@@ -96,8 +96,8 @@ std::string preg::regtype2str(uint16_t &regtype) {
     return result;
 } /* std::string preg::regtype2str(uint16_t &regtype) */
 
-uint16_t preg::str2regtype(std::string &regtype) {
-    uint16_t result = 0;
+uint32_t preg::str2regtype(std::string &regtype) {
+    uint32_t result = 0;
 
     if ("REG_NONE" == regtype) {
         result = preg::REG_NONE;
@@ -141,3 +141,16 @@ uint16_t preg::str2regtype(std::string &regtype) {
 
     return result;
 } /* uint16_t preg::str2regtype(std::string &regtype) */
+
+const char *preg::invalid_magic::what() const throw() {
+    return "Invalid PReg file magic value";
+}
+
+const char *preg::invalid_version::what() const throw() {
+    return "Invalid PReg file version";
+}
+
+const char *preg::no_more_entries::what() const throw() {
+    return "No more PReg entries";
+}
+

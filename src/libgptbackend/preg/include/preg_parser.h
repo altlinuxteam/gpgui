@@ -50,7 +50,7 @@ struct key_entry {
 
 uint16_t buffer2uint16(const char *type_buffer);
 uint32_t buffer2uint32(const char *type_buffer);
-uint16_t parse_type(const char *type_buffer);
+uint32_t parse_type(const char *type_buffer);
 
 class preg_parser {
     std::ifstream polfile;

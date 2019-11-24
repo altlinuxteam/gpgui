@@ -37,8 +37,10 @@ TEST_CASE("Test if PReg file may be written to disk", "[preg_writer]") {
     pe.key_name = "sudo";
     pe.type = 4;
     pe.size = 5;
-    pe.value = 1;
+    pe.value = new char[5]{ 'T', 'e', 's', 't', '1' };
+
     std::string preg_path = "test.pol";
+
     {
         preg::preg_writer pw(preg_path);
         pw.add_entry(pe);

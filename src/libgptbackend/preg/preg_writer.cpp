@@ -70,6 +70,12 @@ void preg::preg_writer::add_entry(preg::entry &pentry) {
     type[0] = pentry.type & 0xFF;
     type[1] = pentry.type >> 8;
 
+    char size[4];
+    size[0] = pentry.size & 0xFF;
+    size[1] = pentry.size >> 8;
+    size[2] = pentry.size >> 16;
+    size[3] = pentry.size >> 24;
+
     // FIXME: Make streambuf out of data and then write it at once.
     this->preg_file.write(range_start, 2);
     this->preg_file.write(value_name, value_name_size);
@@ -81,6 +87,9 @@ void preg::preg_writer::add_entry(preg::entry &pentry) {
     this->preg_file.write(type, 2);
     this->preg_file.write(null_terminator, 2);
     this->preg_file.write(separator, 2);
+    this->preg_file.write(size, 4);
+    this->preg_file.write(separator, 2);
+    this->preg_file.write(pentry.value, pentry.size);
     this->preg_file.write(range_end, 2);
 } /* void preg::preg_writer::add_entry() */
 

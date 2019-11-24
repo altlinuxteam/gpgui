@@ -173,15 +173,15 @@ void qgui::MainWindow::open_preg() {
             new preg::preg_parser(file_name);
         this->regpol_table->setRowCount(0);
 
-        preg::entry pentry = test_regpol->get_next_entry();
-        preg::entry pentry2 = test_regpol->get_next_entry();
-        preg::entry pentry3 = test_regpol->get_next_entry();
-        preg::entry pentry4 = test_regpol->get_next_entry();
-
-        this->preg_entry2table(pentry);
-        this->preg_entry2table(pentry2);
-        this->preg_entry2table(pentry3);
-        this->preg_entry2table(pentry4);
+        try {
+            while (1) {
+                preg::entry pentry = test_regpol->get_next_entry();
+                this->preg_entry2table(pentry);
+            }
+        }
+        catch (...) {
+            std::cout << "Caught exception" << std::endl;
+        }
 
         this->statusBar()->showMessage(tr("Loaded PReg file"));
 

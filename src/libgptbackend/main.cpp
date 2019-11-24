@@ -38,11 +38,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif /* __cplusplus */
 
-const char *regtype2str(uint16_t &regtype) {
+const char *regtype2str(uint32_t &regtype) {
     return preg::regtype2str(regtype).c_str();
 }
 
-uint16_t str2regtype(const char *regtype) {
+uint32_t str2regtype(const char *regtype) {
     std::string reg_name(regtype);
     return preg::str2regtype(reg_name);
 }

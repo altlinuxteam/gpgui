@@ -47,8 +47,8 @@ uint32_t preg::buffer2uint32(const char *type_buffer) {
                               static_cast<unsigned char>(type_buffer[0]));
     return num;
 }
-uint16_t preg::parse_type(const char *type_buffer) {
-    return preg::buffer2uint16(type_buffer);
+uint32_t preg::parse_type(const char *type_buffer) {
+    return preg::buffer2uint32(type_buffer);
 }
 
 preg::preg_parser::preg_parser(std::string &file_path) {
@@ -95,7 +95,7 @@ void preg::preg_parser::check_header() {
         'e' == this->header[2] && 'g' == this->header[3]) {
         std::cout << "Preg success" << std::endl;
     } else {
-        std::cout << "Not a pregfile" << std::endl;
+        throw preg::invalid_magic();
     }
 }
 
@@ -104,7 +104,7 @@ void preg::preg_parser::check_version() {
         0 == this->version[2] && 0 == this->version[3]) {
         std::cout << "Version correct" << std::endl;
     } else {
-        std::cout << "Version incorrect" << std::endl;
+        throw preg::invalid_version();
     }
 }
 
@@ -199,7 +199,7 @@ preg::key_entry preg::preg_parser::get_next_key_entry() {
             }
         }
     } else {
-        std::cout << "Can't parse anymore";
+        throw preg::no_more_entries();
     }
     return entry;
 }
@@ -222,7 +222,7 @@ preg::entry preg::preg_parser::read_entry(preg::key_entry kentry) {
     appentry.type = preg::parse_type(results.at(2).c_str());
     std::cout << "Type " << preg::regtype2str(appentry.type) << std::endl;
     appentry.size = preg::buffer2uint32(results.at(3).c_str());
-    appentry.value = preg::buffer2uint16(results.at(4).c_str());
+    appentry.value = const_cast<char*>(results.at(4).c_str());
     std::cout << "Size " << appentry.size << std::endl;
     std::cout << "Value " << appentry.value << std::endl;
 
