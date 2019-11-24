@@ -37,13 +37,36 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace preg {
 
+/* Same as REG_BINARY */
 const uint32_t REG_NONE                       = 0;
+
+/* Null-terminated-string */
 const uint32_t REG_SZ                         = 1;
+
+/*
+A null-terminated string that contains unexpanded references to
+environment variables (for example, "%PATH%"). It will be a Unicode or
+ANSI string depending on whether you use the Unicode or ANSI functions.
+To expand the environment variable references, use the
+ExpandEnvironmentStrings function.
+*/
 const uint32_t REG_EXPAND_SZ                  = 2;
+
+/* Any kind of binary data */
 const uint32_t REG_BINARY                     = 3;
+
+/* 32-bit number */
 const uint32_t REG_DWORD_LITTLE_ENDIAN        = 4;
+
+/* 32-bit number in BE format */
 const uint32_t REG_DWORD_BIG_ENDIAN           = 5;
+
+/* A null-terminated Unicode string that contains the target path of a
+ * symbolic link that was created by calling the RegCreateKeyEx
+ * function with REG_OPTION_CREATE_LINK. */
 const uint32_t REG_LINK                       = 6;
+
+/* Sequence of null-terminated strings terminated by null-terminator */
 const uint32_t REG_MULTI_SZ                   = 7;
 const uint32_t REG_RESOURCE_LIST              = 8;
 const uint32_t REG_FULL_RESOURCE_DESCRIPTOR   = 9;

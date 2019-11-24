@@ -34,6 +34,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <errno.h>
 #include <fstream>
 #include <iostream>
+#include <climits>
 #include <stdexcept>
 #include <system_error>
 
@@ -86,7 +87,7 @@ std::string gptbackend::iconv_wrapper::convert(std::string from) {
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     */
     bool ignore_error_ = true;
-    size_t buf_size_ = 1024;
+    size_t buf_size_ = INT_MAX;
     // copy the string to a buffer as iconv function requires a non-const char
     // pointer.
     std::vector<char> in_buf(from.begin(), from.end());
