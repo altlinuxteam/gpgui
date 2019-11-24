@@ -6,6 +6,8 @@
 #include <QTableWidget>
 #include <QFileDialog>
 
+#Include "preg_parser.h"
+
 QT_BEGIN_NAMESPACE
 class QMenu;
 class QFileDialog;
@@ -38,6 +40,9 @@ class MainWindow : public QMainWindow {
 
   protected:
     void closeEvent(QCloseEvent *event) override;
+
+  private:
+    void preg_entry2table(preg::entry &pentry);
 }; /* class MainWindow */
 
 } /* namespace qgui */

@@ -18,8 +18,6 @@
 
 #include "MainWindow.h"
 
-#include "preg_parser.h"
-
 namespace {
 
 QStringList regtype_list{"REG_NONE",
@@ -107,8 +105,7 @@ void qgui::MainWindow::about() {
     QMessageBox::about(this, tr("About GPGUI"), tr("GPGUI about"));
 }
 
-namespace {
-void preg_entry2table(QTableWidget *regpol_table, preg::entry &pentry) {
+void qgui::MainWindow::preg_entry2table(preg::entry &pentry) {
     std::string regtype = std::string(preg::regtype2str(pentry.type));
     std::string val = std::to_string(pentry.value);
 
@@ -123,14 +120,13 @@ void preg_entry2table(QTableWidget *regpol_table, preg::entry &pentry) {
     QTableWidgetItem *vtype = new QTableWidgetItem(regtype.c_str());
     QTableWidgetItem *vval = new QTableWidgetItem(val.c_str());
 
-    regpol_table->insertRow(regpol_table->rowCount());
+    this->regpol_table->insertRow(regpol_table->rowCount());
 
-    regpol_table->setItem(regpol_table->rowCount() - 1, 0, vname);
-    regpol_table->setItem(regpol_table->rowCount() - 1, 1, kname);
-    regpol_table->setCellWidget(regpol_table->rowCount() - 1, 2, regtype_box);
-    regpol_table->setItem(regpol_table->rowCount() - 1, 3, vval);
+    this->regpol_table->setItem(this->regpol_table->rowCount() - 1, 0, vname);
+    this->regpol_table->setItem(this->regpol_table->rowCount() - 1, 1, kname);
+    this->regpol_table->setCellWidget(this->regpol_table->rowCount() - 1, 2, regtype_box);
+    this->regpol_table->setItem(this->regpol_table->rowCount() - 1, 3, vval);
 }
-} /* namespace */
 
 void qgui::MainWindow::open_preg() {
     QStringList preg_file_name;
@@ -148,10 +144,10 @@ void qgui::MainWindow::open_preg() {
         preg::entry pentry3 = test_regpol->get_next_entry();
         preg::entry pentry4 = test_regpol->get_next_entry();
 
-        preg_entry2table(this->regpol_table, pentry);
-        preg_entry2table(this->regpol_table, pentry2);
-        preg_entry2table(this->regpol_table, pentry3);
-        preg_entry2table(this->regpol_table, pentry4);
+        this->preg_entry2table(this->regpol_table, pentry);
+        this->preg_entry2table(this->regpol_table, pentry2);
+        this->preg_entry2table(this->regpol_table, pentry3);
+        this->preg_entry2table(this->regpol_table, pentry4);
 
         this->statusBar()->showMessage(tr("Loaded PReg file"));
 
