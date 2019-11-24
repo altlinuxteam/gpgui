@@ -19,9 +19,11 @@ link_directories(/usr/local/lib)
 
 set(Iconv_IS_BUILT_IN FALSE)
 
-find_package(Iconv) # PReg key name charset conversion
+find_package(Iconv REQUIRED) # PReg key name charset conversion
 find_package(Catch2 REQUIRED) # Unit tests
 find_package(Doxygen) # Documentation
+find_package(PkgConfig)
+pkg_check_modules(LIBXMLPP IMPORTED_TARGET libxml++)
 
 set(PREG_PARSER_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/preg/iconv_wrapper.cpp

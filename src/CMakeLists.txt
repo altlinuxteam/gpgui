@@ -18,6 +18,7 @@ cmake_policy(SET CMP0054 NEW)
 add_subdirectory(libgptbackend)
 
 include_directories(/usr/local/lib)
+#link_directories(/usr/local/lib)
 
 set(Iconv_IS_BUILT_IN FALSE)
 
@@ -31,6 +32,7 @@ set(GPGUI_GUI_HEADER_DIRS
 
 set(GPGUI_GUI_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/gui/MainWindow.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/gui/REG_DWORD_Dialog.cpp
 )
 
 set(GPGUI_HEADER_DIRS
