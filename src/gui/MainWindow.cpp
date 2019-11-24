@@ -140,7 +140,7 @@ void qgui::MainWindow::about() {
 
 void qgui::MainWindow::preg_entry2table(preg::entry &pentry) {
     std::string regtype = std::string(preg::regtype2str(pentry.type));
-    std::string val = std::to_string(pentry.value);
+    std::string val = "0"; //std::to_string(pentry.value);
 
     QComboBox *regtype_box = new QComboBox();
     regtype_box->addItems(regtype_list);
