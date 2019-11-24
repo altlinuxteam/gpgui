@@ -23,7 +23,9 @@ find_package(Iconv REQUIRED) # PReg key name charset conversion
 find_package(Catch2 REQUIRED) # Unit tests
 find_package(Doxygen) # Documentation
 find_package(PkgConfig)
-pkg_check_modules(LIBXMLPP IMPORTED_TARGET libxml++)
+# There is XML registry format produced by python-samba. This library is
+# a dependency for producing XML files of this format.
+pkg_check_modules(PUGIXML REQUIRED IMPORTED_TARGET pugixml)
 
 set(PREG_PARSER_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/preg/iconv_wrapper.cpp

@@ -54,6 +54,7 @@ class MainWindow : public QMainWindow {
     QMenu *help_menu;
 
     QFileDialog *preg_open_dialog;
+    QFileDialog *preg_save_dialog;
 
     QTableWidget *regpol_table;
 

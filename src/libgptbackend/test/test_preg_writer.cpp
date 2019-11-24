@@ -31,7 +31,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <catch2/catch.hpp>
 #include "preg_writer.h"
 
-TEST_CASE("Test if PReg file may be written to disk", "[preg_writer]") {
+TEST_CASE("Test if PReg file may be written to disk", "[preg_writer]" /*"[!hide]"*/) {
     preg::entry pe;
     pe.value_name = "Software\\BaseALT\\Policies\\Control";
     pe.key_name = "sudo";

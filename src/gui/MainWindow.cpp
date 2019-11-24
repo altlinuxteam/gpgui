@@ -48,6 +48,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "MainWindow.h"
 
+#include "preg_writer.h"
+
 namespace {
 
 QStringList regtype_list{"REG_NONE",
@@ -99,6 +101,11 @@ qgui::MainWindow::MainWindow(QWidget *parent)
         this, tr("Select PReg file to edit"), QDir::currentPath(),
         "PReg files (*.pol);;All files (*.*)");
     this->preg_open_dialog->setFileMode(QFileDialog::ExistingFile);
+
+    this->preg_save_dialog = new QFileDialog(
+        this, tr("Select PReg file to save"), QDir::currentPath(),
+        "PReg files (*.pol);;All files (*.*)");
+    this->preg_save_dialog->setFileMode(QFileDialog::AnyFile);
 
     QVBoxLayout *layout_regpol_editor = new QVBoxLayout;
     QVBoxLayout *layout_gpo_editor = new QVBoxLayout;
@@ -190,7 +197,33 @@ void qgui::MainWindow::open_preg() {
     }
 }
 
-void qgui::MainWindow::save_preg() {}
+void qgui::MainWindow::save_preg() {
+    QStringList preg_file_name;
+    /* Using exec() is not recommended by Qt documentation but it
+     * is easy to perform synchronous call */
+    if (this->preg_save_dialog->exec()) {
+        preg_file_name = this->preg_save_dialog->selectedFiles();
+
+        std::string file_name = preg_file_name[0].toStdString();
+
+        preg::preg_writer pw(file_name);
+        for (size_t rowid = 0; rowid < this->regpol_table->rowCount(); rowid++) {
+            QTableWidgetItem *qvname = this->regpol_table->item(rowid, 0);
+            QTableWidgetItem *qkname = this->regpol_table->item(rowid, 1);
+            QTableWidgetItem *qtype  = this->regpol_table->item(rowid, 2);
+            QTableWidgetItem *qval   = this->regpol_table->item(rowid, 3);
+
+            preg::entry pe;
+            pe.value_name = const_cast<char*>(qvname->data(Qt::DisplayRole).toString().toStdString().c_str());
+            pe.key_name   = const_cast<char*>(qkname->data(Qt::DisplayRole).toString().toStdString().c_str());
+            pe.type       = 4;
+            pe.size       = 4;
+            pe.value      = const_cast<char*>(qval->data(Qt::DisplayRole).toString().toStdString().c_str());
+
+            pw.add_entry(pe);
+        }
+    }
+}
 
 void qgui::MainWindow::save_dotreg() {}
 
