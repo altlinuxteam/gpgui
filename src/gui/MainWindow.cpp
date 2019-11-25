@@ -113,6 +113,7 @@ qgui::MainWindow::MainWindow(QWidget *parent)
     QTabWidget *tw = new QTabWidget;
     tw->addTab(new QWidget, tr("PReg editor"));
     tw->addTab(new QWidget, tr("GPO editor"));
+    tw->addTab(new QWidget, tr("Domain Control"));
 
     this->regpol_table = new QTableWidget(0, 4, this);
     QStringList labels{"Value name", "Key name", "Type", "Value"};
