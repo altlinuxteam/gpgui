@@ -210,13 +210,13 @@ void qgui::MainWindow::save_preg() {
         for (size_t rowid = 0; rowid < this->regpol_table->rowCount(); rowid++) {
             QTableWidgetItem *qvname = this->regpol_table->item(rowid, 0);
             QTableWidgetItem *qkname = this->regpol_table->item(rowid, 1);
-            QTableWidgetItem *qtype  = this->regpol_table->item(rowid, 2);
+            QComboBox *qtype  = qobject_cast<QComboBox*>(this->regpol_table->cellWidget(rowid, 2));
             QTableWidgetItem *qval   = this->regpol_table->item(rowid, 3);
 
             preg::entry pe;
             pe.value_name = const_cast<char*>(qvname->data(Qt::DisplayRole).toString().toStdString().c_str());
             pe.key_name   = const_cast<char*>(qkname->data(Qt::DisplayRole).toString().toStdString().c_str());
-            pe.type       = 4;
+            pe.type       = qtype->currentIndex();
             pe.size       = 4;
             pe.value      = const_cast<char*>(qval->data(Qt::DisplayRole).toString().toStdString().c_str());
 
