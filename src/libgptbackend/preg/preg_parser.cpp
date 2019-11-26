@@ -93,7 +93,6 @@ void preg::preg_parser::read_version() {
 void preg::preg_parser::check_header() {
     if ('P' == this->header[0] && 'R' == this->header[1] &&
         'e' == this->header[2] && 'g' == this->header[3]) {
-        std::cout << "Preg success" << std::endl;
     } else {
         throw preg::invalid_magic();
     }
@@ -102,7 +101,6 @@ void preg::preg_parser::check_header() {
 void preg::preg_parser::check_version() {
     if (1 == this->version[0] && 0 == this->version[1] &&
         0 == this->version[2] && 0 == this->version[3]) {
-        std::cout << "Version correct" << std::endl;
     } else {
         throw preg::invalid_version();
     }
@@ -162,107 +160,73 @@ size_t preg::preg_parser::seek_next_separator(size_t abs_file_start_offset) {
     return end_offset;
 }
 
-preg::key_entry preg::preg_parser::get_next_key_entry() {
+std::string preg::preg_parser::read_buf(size_t start_pos, size_t end_pos) {
+    std::cout << "Reading range from " << start_pos << " to " << end_pos << std::endl;
+    if (start_pos >= this->raw_file_size) {
+        throw preg::no_more_entries();
+    }
+    size_t entry_size = end_pos - start_pos;
+    if ((start_pos + entry_size) > this->raw_file_size) {
+        entry_size = raw_file_size - start_pos;
+    }
+    char *entry_buffer = new char[entry_size];
+    this->polfile.seekg(start_pos);
+    this->polfile.read(entry_buffer, entry_size);
+    std::string bufstring(entry_buffer, entry_size);
+    return bufstring;
+}
+
+preg::entry preg::preg_parser::get_next_entry() {
     preg::key_entry entry;
     entry.start_offset = this->next_entry_start_offset;
     entry.end_offset = this->next_entry_start_offset;
-
-    std::cout << "Starting at " << this->next_entry_start_offset
-              << " and the next separator is at "
-              << this->seek_next_separator(this->next_entry_start_offset)
-              << std::endl;
-
-    /* Check if we're not at the end of file */
-    if (this->next_entry_start_offset < this->raw_file_size) {
-        char range_init = this->read_byte(this->next_entry_start_offset);
-
-        /* Check that we're at the beginning of the entry we
-         * want to parse */
-        if (is_range_start(range_init)) {
-            std::cout << "Range start found at "
-                      << this->next_entry_start_offset << std::endl;
-            char sym_buf;
-
-            /* Read file byte by byte seeking for the end of entry */
-            for (size_t offset = this->next_entry_start_offset + 1;
-                 offset <= this->raw_file_size; offset++) {
-                sym_buf = this->read_byte(offset);
-
-                /* Build and return the entry if we're found its end */
-                if (is_range_end(sym_buf)) {
-                    std::cout << "Found range end at position: " << offset
-                              << std::endl;
-                    entry.end_offset = offset + 2;
-                    this->next_entry_start_offset = offset + 2;
-                    return entry;
-                }
-            }
-        }
-    } else {
+    if (this->next_entry_start_offset >= this->raw_file_size) {
         throw preg::no_more_entries();
     }
-    return entry;
-}
 
-preg::entry preg::preg_parser::read_entry(preg::key_entry kentry) {
-    preg::entry appentry;
-    std::vector<std::string> results = this->split_entry(kentry);
-    std::cout << "Elements in split entry: " << (int)results.size()
+    size_t valuename_end = this->seek_next_separator(this->next_entry_start_offset);
+    size_t keyname_end = this->seek_next_separator(valuename_end + 1);
+    size_t type_end = this->seek_next_separator(keyname_end + 1);
+    size_t size_end = this->seek_next_separator(type_end + 1);
+    std::cout << "Starting at " << this->next_entry_start_offset
+              << " and the key name ends at "
+              << keyname_end
+              << " value ends at: " << valuename_end
+              << " type ends at: " << type_end
+              << " size ends at: " << size_end
               << std::endl;
+    std::vector<std::string> single_entry;
+    std::string str_valuename = this->read_buf(this->next_entry_start_offset, valuename_end);
+    std::string str_keyname = this->read_buf(valuename_end + 2, keyname_end);
+    std::string str_type = this->read_buf(keyname_end + 2, type_end - 1);
+    std::string str_size = this->read_buf(type_end + 2, size_end - 1);
+    size_t value_size = preg::buffer2uint32(str_size.c_str());
+    std::string str_value = this->read_buf(size_end + 2, size_end + 2 + value_size);
+    std::cout << " keyname " << str_keyname
+     << " valname " << str_valuename
+     << " type " << str_type
+     << " size " << value_size
+     << " value " << str_value
+     << std::endl;
+    this->next_entry_start_offset = size_end + 2 + value_size + 4;
 
+    preg::entry appentry;
     /* We also need converter from UTF-16 to UTF-8 */
     gptbackend::iconv_wrapper iwrapper("UTF-16LE", "UTF-8");
 
-    std::string vn = iwrapper.convert(results.at(0));
-    std::string kn = iwrapper.convert(results.at(1));
+    std::string vn = iwrapper.convert(str_valuename);
+    std::string kn = iwrapper.convert(str_keyname);
     appentry.value_name = std::string(vn, 0, vn.length() - 1);
     appentry.key_name = std::string(kn, 0, kn.length() - 1);
     std::cout << "Value name " << appentry.value_name << std::endl;
     std::cout << "Key name " << appentry.key_name << std::endl;
-    appentry.type = preg::parse_type(results.at(2).c_str());
+    appentry.type = preg::parse_type(str_type.c_str());
     std::cout << "Type " << preg::regtype2str(appentry.type) << std::endl;
-    appentry.size = preg::buffer2uint32(results.at(3).c_str());
-    appentry.value = const_cast<char*>(results.at(4).c_str());
+    appentry.size = preg::buffer2uint32(str_size.c_str());
+    appentry.value = const_cast<char*>(str_value.c_str());
     std::cout << "Size " << appentry.size << std::endl;
     std::cout << "Value " << appentry.value << std::endl;
 
     return appentry;
 }
 
-preg::entry preg::preg_parser::get_next_entry() {
-    return this->read_entry(this->get_next_key_entry());
-}
-
-std::string preg::preg_parser::strip_square_braces(preg::key_entry kentry) {
-    size_t entry_size = (kentry.end_offset - 2) - (kentry.start_offset + 2);
-    char *entry_buffer = new char[entry_size];
-    this->polfile.seekg((kentry.start_offset + 2));
-    this->polfile.read(entry_buffer, entry_size);
-    std::string bufstring(entry_buffer, entry_size);
-    return bufstring;
-}
-
-std::vector<std::string>
-preg::preg_parser::split_entry(preg::key_entry kentry) {
-    std::string bufstring = this->strip_square_braces(kentry);
-    const char *raw_buffer = bufstring.c_str();
-    std::vector<std::string> results;
-
-    size_t offset = 0;
-    for (size_t i = 0; i <= bufstring.length(); i++) {
-        // std::cout << "[" << i << "] = (" << (int)raw_buffer[i] << "] " <<
-        // raw_buffer[i] << std::endl;
-        if (is_preg_entry_separator(raw_buffer[i]) || i == bufstring.length()) {
-            size_t split_length = i - offset;
-            std::string buf = std::string(bufstring, offset, split_length);
-            results.push_back(buf);
-            offset = i + 2; // Skip separator
-            /*if (is_range_end(raw_buffer[i]) || i == bufstring.length()) {
-            break;
-            }*/
-            i++;
-        }
-    }
-
-    return results;
-}

@@ -58,7 +58,7 @@ class preg_parser {
     size_t raw_file_size = 0;
     char header[4];
     char version[4];
-    size_t next_entry_start_offset = 8;
+    size_t next_entry_start_offset = 10;
 
   public:
     preg_parser(std::string &file_path);
@@ -71,11 +71,8 @@ class preg_parser {
     void check_header();
     void check_version();
     char read_byte(size_t abs_file_start_offset);
+    std::string read_buf(size_t start_pos, size_t end_pos);
     size_t seek_next_separator(size_t abs_file_start_offset);
-    key_entry get_next_key_entry();
-    entry read_entry(key_entry kentry);
-    std::string strip_square_braces(key_entry kentry);
-    std::vector<std::string> split_entry(key_entry kentry);
 };
 
 } /* namespace preg */
